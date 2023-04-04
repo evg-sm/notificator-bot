@@ -1,4 +1,4 @@
-package com.notificator.bot.components
+package com.notificator.bot.application.service.telegram.components
 
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand
 

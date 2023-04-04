@@ -1,7 +1,8 @@
-package com.notificator.bot
+package com.notificator.bot.application.service.telegram
 
-import com.notificator.bot.components.BotCommands
-import com.notificator.bot.components.BotCommands.Companion.LIST_OF_COMMANDS
+import com.notificator.bot.application.port.`in`.TelegramListener
+import com.notificator.bot.application.service.telegram.components.BotCommands
+import com.notificator.bot.application.service.telegram.components.BotCommands.Companion.LIST_OF_COMMANDS
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
@@ -15,7 +16,7 @@ class NotificatorBot(
     @Value("\${app.telegram.token}") private val telegramToken: String,
     @Value("\${app.telegram.bot-username}") private val botUsername: String,
     private val botCommandHandler: BotCommandHandler
-) : TelegramLongPollingBot(telegramToken), BotCommands {
+) : TelegramLongPollingBot(telegramToken), BotCommands, TelegramListener {
 
     override fun getBotUsername(): String = botUsername
 
