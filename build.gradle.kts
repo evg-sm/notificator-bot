@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 
 plugins {
-    val kotlinVersion = "1.7.10"
+    val kotlinVersion = "1.6.10"
 
     id("org.springframework.boot") version "2.7.5"
     id("io.spring.dependency-management") version "1.0.15.RELEASE"
@@ -26,6 +26,8 @@ repositories {
 }
 
 dependencies {
+    implementation(kotlin("reflect"))
+    implementation(kotlin("stdlib-jdk8"))
     // spring
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
@@ -35,12 +37,11 @@ dependencies {
     // db
     implementation("com.h2database:h2")
     implementation("org.flywaydb:flyway-core")
-    // kotlin
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    // kotlin logging
     implementation("io.github.microutils:kotlin-logging:3.0.5")
     // telegram
-    implementation("org.telegram:telegrambots:6.5.0")
+//    implementation("org.telegram:telegrambots:6.5.0")
+    implementation("org.telegram:telegrambots-spring-boot-starter:6.5.0")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
@@ -53,7 +54,7 @@ dependencies {
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "17"
+        jvmTarget = "11"
     }
 }
 

@@ -1,5 +1,10 @@
 server.port: 10737
 
+app:
+  telegram:
+    token: some-token
+    bot-username: some-username
+
 spring:
   datasource:
     url: jdbc:h2:mem:testdb
