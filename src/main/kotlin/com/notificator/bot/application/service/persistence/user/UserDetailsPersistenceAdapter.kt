@@ -1,15 +1,15 @@
-package com.notificator.bot.application.service.persistence
+package com.notificator.bot.application.service.persistence.user
 
-import com.notificator.bot.application.port.out.UserDetailsPort
-import com.notificator.bot.application.service.persistence.entity.UserDetailsEntity
+import com.notificator.bot.application.port.out.UserDetailsPersistencePort
+import com.notificator.bot.application.service.persistence.user.entity.UserDetailsEntity
 import com.notificator.bot.domain.UserDetails
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
 
 @Repository
-class UserDetailsAdapter(
+class UserDetailsPersistenceAdapter(
     private val repository: UserDetailsRepository
-): UserDetailsPort {
+): UserDetailsPersistencePort {
 
     override fun save(userDetails: UserDetails) {
         if (findById(userDetails.id) == null) {

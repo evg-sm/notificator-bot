@@ -1,6 +1,7 @@
 package com.notificator.bot.application.service.telegram
 
-import com.notificator.bot.application.port.out.UserDetailsPort
+import com.notificator.bot.application.port.out.NotificationPersistencePort
+import com.notificator.bot.application.port.out.UserDetailsPersistencePort
 import com.notificator.bot.application.service.telegram.components.BotCommands
 import com.notificator.bot.application.service.telegram.components.BotCommands.Companion.GREETINGS
 import com.notificator.bot.application.service.telegram.components.BotCommands.Companion.HELP_KEYWORD
@@ -8,11 +9,15 @@ import com.notificator.bot.application.service.telegram.components.BotCommands.C
 import com.notificator.bot.application.service.telegram.components.BotCommands.Companion.COMMAND_KEYWORD_LIST
 import com.notificator.bot.application.service.telegram.components.BotCommands.Companion.START_KEYWORD
 import com.notificator.bot.application.service.telegram.components.Buttons
+import com.notificator.bot.domain.Notification
+import com.notificator.bot.domain.Status
 import com.notificator.bot.domain.UserDetails
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.Update
 import org.telegram.telegrambots.meta.api.objects.User
+import java.time.LocalDate
+import java.time.LocalTime
 
 interface BotCommandHandler {
     fun handle(update: Update, block: (sendMessage: SendMessage) -> Unit)
@@ -20,7 +25,8 @@ interface BotCommandHandler {
 
 @Component
 class BotCommandHandlerImpl(
-    private val userDetailsPort: UserDetailsPort
+    private val userDetailsPersistencePort: UserDetailsPersistencePort,
+    private val notificationPersistencePort: NotificationPersistencePort
 ) : BotCommandHandler, BotCommands {
 
     override fun handle(update: Update, block: (sendMessage: SendMessage) -> Unit) {
@@ -57,7 +63,16 @@ class BotCommandHandlerImpl(
     }
 
     private fun handleTextMessage(update: Update, block: (sendMessage: SendMessage) -> Unit) {
-        userDetailsPort.save(update.message.from.toDomain())
+        userDetailsPersistencePort.save(update.message.from.toDomain())
+
+        notificationPersistencePort.save(
+            Notification(
+                status = Status.PENDING,
+                text = update.message.text,
+                date = LocalDate.now(),
+                time = LocalTime.now()
+            )
+        )
 
         block(SendMessage().apply {
             chatId = update.message.chatId.toString()
