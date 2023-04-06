@@ -13,18 +13,12 @@ interface BotCommands {
 
         val LIST_OF_COMMANDS = listOf(
             BotCommand(START_KEYWORD, "start bot"),
-            BotCommand(HELP_KEYWORD, "bot help"),
-            BotCommand("/new", "some new command")
+            BotCommand(HELP_KEYWORD, "bot help")
         )
 
         val HELP_TEXT =
             """
-            This bot will help to count the number of messages in the chat. The following commands are available to you:
-            
-            /start - start the bot
-            /help - help menu
+            Что может этот бот - бла, бла, бла ... что-то сюда написать ...
             """.trimIndent()
-
-        val GREETINGS = "GOOD MORNING, EVERYONE !!!"
     }
 }

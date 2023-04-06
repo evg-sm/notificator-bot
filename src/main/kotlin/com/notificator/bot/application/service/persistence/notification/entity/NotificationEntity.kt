@@ -1,27 +1,44 @@
 package com.notificator.bot.application.service.persistence.notification.entity
 
 import com.notificator.bot.application.service.persistence.user.entity.UserDetailsEntity
-import com.notificator.bot.domain.Status
+import com.notificator.bot.domain.NotificationStatus
+import com.notificator.bot.domain.NotificationType
 import org.springframework.data.util.ProxyUtils
-import java.time.LocalDate
-import java.time.LocalTime
-import javax.persistence.*
+import java.time.LocalDateTime
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.EnumType
+import javax.persistence.Enumerated
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
+import javax.persistence.Id
+import javax.persistence.Table
 
 @Entity
 @Table(schema = "bot", name = "notification")
 data class NotificationEntity(
+
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bot.notification_id")
     val id: Long? = null,
+
+    @Column(name = "user_id")
+    val userId: Long,
+
+    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
+    val type: NotificationType,
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    val status: Status,
+    val status: NotificationStatus,
+
     @Column(name = "text")
     val text: String,
-    @Column(name = "date")
-    val date: LocalDate,
-    @Column(name = "time")
-    val time: LocalTime
+
+    @Column(name = "date_time")
+    val dateTime: LocalDateTime,
 ) {
     override fun equals(other: Any?): Boolean {
         other ?: return false
