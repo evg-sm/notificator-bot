@@ -1,7 +1,7 @@
 package com.notificator.bot.application.service.persistence.notification.entity
 
 import com.notificator.bot.application.service.persistence.user.entity.UserDetailsEntity
-import com.notificator.bot.domain.NotificationStatus
+import com.notificator.bot.domain.NotificationSendStatus
 import com.notificator.bot.domain.NotificationType
 import org.springframework.data.util.ProxyUtils
 import java.time.LocalDateTime
@@ -26,13 +26,16 @@ data class NotificationEntity(
     @Column(name = "user_id")
     val userId: Long,
 
+    @Column(name = "chat_id")
+    val chatId: String,
+
     @Column(name = "type")
     @Enumerated(EnumType.STRING)
     val type: NotificationType,
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
-    val status: NotificationStatus,
+    @Column(name = "send_status")
+    val sendStatus: NotificationSendStatus,
 
     @Column(name = "text")
     val text: String,

@@ -1,6 +1,6 @@
 package com.notificator.bot.domain
 
-enum class NotificationStatus {
+enum class NotificationSendStatus {
     PENDING,
     SENT;
 }

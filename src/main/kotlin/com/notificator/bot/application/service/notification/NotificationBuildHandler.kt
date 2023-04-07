@@ -1,10 +1,10 @@
 package com.notificator.bot.application.service.notification
 
-import com.notificator.bot.application.port.out.NotificationDraftStorage
+import com.notificator.bot.application.port.out.NotificationDraftStoragePort
 import com.notificator.bot.application.port.out.NotificationPersistencePort
 import com.notificator.bot.application.port.out.UserDetailsPersistencePort
 import com.notificator.bot.domain.NotificationDraft
-import com.notificator.bot.domain.State
+import com.notificator.bot.domain.DraftState
 import com.notificator.bot.domain.NotificationType
 import com.notificator.bot.domain.UserDetails
 import org.springframework.stereotype.Component
@@ -21,7 +21,7 @@ interface NotificationBuildHandler {
 
 @Component
 class NotificationBuildHandlerImpl(
-    private val notificationDraftStorage: NotificationDraftStorage,
+    private val notificationDraftStoragePort: NotificationDraftStoragePort,
     private val userDetailsPersistencePort: UserDetailsPersistencePort,
     private val notificationPersistencePort: NotificationPersistencePort
 ) : NotificationBuildHandler {
@@ -31,14 +31,15 @@ class NotificationBuildHandlerImpl(
 
         val userId = update.message.from.id
         val messageText = update.message.text
-        val notificationDraft: NotificationDraft? = notificationDraftStorage.get(userId)
+        val notificationDraft: NotificationDraft? = notificationDraftStoragePort.get(userId)
 
         if (notificationDraft == null) {
-            notificationDraftStorage.set(
+            notificationDraftStoragePort.set(
                 update.message.from.id,
                 NotificationDraft(
                     userId = update.message.from.id,
-                    state = State.INIT,
+                    chatId = update.message.chatId.toString(),
+                    draftState = DraftState.INIT,
                     type = NotificationType.UNDEFINED,
                     text = update.message.text,
                 )
@@ -50,15 +51,15 @@ class NotificationBuildHandlerImpl(
             })
         }
 
-        if (notificationDraft != null && notificationDraft.state == State.INIT) {
-            notificationDraftStorage.get(userId)?.let { ntf ->
+        if (notificationDraft != null && notificationDraft.draftState == DraftState.INIT) {
+            notificationDraftStoragePort.get(userId)?.let { ntf ->
                 val newNotificationType = when (messageText) {
                     "единоразовое" -> NotificationType.ONCE
                     "регулярное" -> NotificationType.REGULAR
                     else -> NotificationType.UNDEFINED
                 }
 
-                notificationDraftStorage.set(userId, ntf.copy(type = newNotificationType, state = State.TYPE_SET))
+                notificationDraftStoragePort.set(userId, ntf.copy(type = newNotificationType, draftState = DraftState.TYPE_SET))
 
                 execute(SendMessage().apply {
                     chatId = update.message.chatId.toString()
@@ -67,11 +68,11 @@ class NotificationBuildHandlerImpl(
             }
         }
 
-        if (notificationDraft != null && notificationDraft.state == State.TYPE_SET) {
-            notificationDraftStorage.get(userId)?.let { ntf ->
+        if (notificationDraft != null && notificationDraft.draftState == DraftState.TYPE_SET) {
+            notificationDraftStoragePort.get(userId)?.let { ntf ->
                 val newDate = LocalDate.parse(messageText, DateTimeFormatter.ofPattern("dd.MM.yyyy"))
 
-                notificationDraftStorage.set(userId, ntf.copy(date = newDate, state = State.DATE_SET))
+                notificationDraftStoragePort.set(userId, ntf.copy(date = newDate, draftState = DraftState.DATE_SET))
 
                 execute(SendMessage().apply {
                     chatId = update.message.chatId.toString()
@@ -80,12 +81,12 @@ class NotificationBuildHandlerImpl(
             }
         }
 
-        if (notificationDraft != null && notificationDraft.state == State.DATE_SET) {
-            notificationDraftStorage.get(userId)?.let { ntf ->
+        if (notificationDraft != null && notificationDraft.draftState == DraftState.DATE_SET) {
+            notificationDraftStoragePort.get(userId)?.let { ntf ->
                 val newTime = LocalTime.parse(messageText, DateTimeFormatter.ofPattern("HH:mm"))
 
-                val finalNotification = ntf.copy(time = newTime, state = State.TIME_SET)
-                notificationDraftStorage.delete(userId)
+                val finalNotification = ntf.copy(time = newTime, draftState = DraftState.TIME_SET)
+                notificationDraftStoragePort.delete(userId)
                 notificationPersistencePort.save(finalNotification)
 
                 execute(SendMessage().apply {

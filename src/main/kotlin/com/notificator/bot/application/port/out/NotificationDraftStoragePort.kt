@@ -2,7 +2,7 @@ package com.notificator.bot.application.port.out
 
 import com.notificator.bot.domain.NotificationDraft
 
-interface NotificationDraftStorage {
+interface NotificationDraftStoragePort {
 
     fun get(userId: Long): NotificationDraft?
 

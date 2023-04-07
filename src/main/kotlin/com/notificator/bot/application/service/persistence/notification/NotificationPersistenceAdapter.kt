@@ -2,10 +2,12 @@ package com.notificator.bot.application.service.persistence.notification
 
 import com.notificator.bot.application.port.out.NotificationPersistencePort
 import com.notificator.bot.application.service.persistence.notification.entity.NotificationEntity
+import com.notificator.bot.domain.Notification
 import com.notificator.bot.domain.NotificationDraft
-import com.notificator.bot.domain.NotificationStatus
+import com.notificator.bot.domain.NotificationSendStatus
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 @Repository
 class NotificationPersistenceAdapter(
@@ -16,12 +18,39 @@ class NotificationPersistenceAdapter(
         repository.save(notificationDraft.toEntity())
     }
 
+    override fun save(notification: Notification) {
+        repository.save(notification.toEntity())
+    }
+
+    override fun selectUnsent(): List<Notification> =
+        repository.selectUnsent(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES)).map { it.toDomain() }
+
     private fun NotificationDraft.toEntity() = NotificationEntity(
-        id = id,
         userId = userId,
+        chatId = chatId,
         type = type,
-        status = NotificationStatus.PENDING,
+        sendStatus = NotificationSendStatus.PENDING,
         text = text,
         dateTime = LocalDateTime.of(date, time)
+    )
+
+    private fun Notification.toEntity() = NotificationEntity(
+        id = id,
+        userId = userId,
+        chatId = chatId,
+        type = type,
+        sendStatus = sendStatus,
+        text = text,
+        dateTime = dateTime
+    )
+
+    private fun NotificationEntity.toDomain() = Notification(
+        id = id,
+        userId = userId,
+        chatId = chatId,
+        type = type,
+        sendStatus = sendStatus,
+        text = text,
+        dateTime = dateTime
     )
 }

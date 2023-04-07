@@ -4,16 +4,16 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 data class NotificationDraft(
-    val id: Long? = null,
+    val chatId: String,
     val type: NotificationType,
     val userId: Long,
-    val state: State,
+    val draftState: DraftState,
     val text: String,
     val date: LocalDate = LocalDate.now(),
     val time: LocalTime = LocalTime.now()
 )
 
-enum class State {
+enum class DraftState {
     INIT,
     TYPE_SET,
     DATE_SET,
