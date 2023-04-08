@@ -1,5 +1,9 @@
 server.port: 10737
 
+logging:
+  file:
+    name: app.log
+
 app:
   telegram:
     token: some-token
@@ -17,6 +21,7 @@ spring:
     password: some_password
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
   flyway:
     enabled: true
     locations: classpath:db/migration
