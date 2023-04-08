@@ -1,18 +1,22 @@
 package com.notificator.bot.application.service.telegram
 
+import com.notificator.bot.application.port.out.NotificationQuery
 import com.notificator.bot.application.service.notification.NotificationBuildHandler
 import com.notificator.bot.application.service.telegram.components.BotCommands
 import com.notificator.bot.application.service.telegram.components.BotCommands.Companion.COMMAND_KEYWORD_LIST
 import com.notificator.bot.application.service.telegram.components.BotCommands.Companion.HELP_KEYWORD
 import com.notificator.bot.application.service.telegram.components.BotCommands.Companion.HELP_TEXT
+import com.notificator.bot.application.service.telegram.components.BotCommands.Companion.LIST_KEYWORD
 import com.notificator.bot.application.service.telegram.components.BotCommands.Companion.START_KEYWORD
 import com.notificator.bot.application.service.telegram.components.Buttons
-import com.notificator.bot.domain.UserDetails
+import com.notificator.bot.domain.Notification
+import com.notificator.bot.domain.NotificationType
 import mu.KLogging
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.Update
-import org.telegram.telegrambots.meta.api.objects.User
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 interface BotCommandHandler {
     fun handle(update: Update, execute: (sendMessage: SendMessage) -> Unit)
@@ -20,7 +24,8 @@ interface BotCommandHandler {
 
 @Component
 class BotCommandHandlerImpl(
-    private val notificationBuildHandler: NotificationBuildHandler
+    private val notificationBuildHandler: NotificationBuildHandler,
+    private val notificationQuery: NotificationQuery
 ) : BotCommandHandler, BotCommands {
 
     companion object : KLogging()
@@ -38,6 +43,7 @@ class BotCommandHandlerImpl(
         val responseText = when (update.message.text) {
             START_KEYWORD -> "О чем Вам напомнить?"
             HELP_KEYWORD -> HELP_TEXT
+            LIST_KEYWORD -> prettyNotificationList(notificationQuery.get(update.message.from.id))
             else -> "Пожалуйста, введите корректную команду ${listOf(START_KEYWORD, HELP_KEYWORD)}"
         }
 
@@ -62,4 +68,23 @@ class BotCommandHandlerImpl(
         logger.info { "Received text message ${update.message.text}" }
         notificationBuildHandler.handle(update, execute)
     }
+
+    private fun prettyNotificationList(list: List<Notification>): String {
+        var rowNum = 0
+        val stringBuilder = StringBuilder()
+        list.forEach { notification ->
+            stringBuilder.append("$rowNum - '${notification.type.pretty()}' '${notification.text}' '${notification.dateTime.pretty()}'")
+                .append("\n")
+            rowNum++
+        }
+        return stringBuilder.toString()
+    }
+
+    private fun NotificationType.pretty(): String = when (this) {
+        NotificationType.REGULAR -> "регулярное"
+        NotificationType.ONCE -> "единоразовое"
+        NotificationType.UNDEFINED -> "не определено"
+    }
+
+    private fun LocalDateTime.pretty(): String = format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
 }

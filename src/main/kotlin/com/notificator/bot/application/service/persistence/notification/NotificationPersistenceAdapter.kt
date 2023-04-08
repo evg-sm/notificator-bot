@@ -25,6 +25,10 @@ class NotificationPersistenceAdapter(
     override fun selectUnsent(): List<Notification> =
         repository.selectUnsent(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES)).map { it.toDomain() }
 
+    override fun findByUserId(userID: Long): List<Notification> =
+        repository.findByUserId(userID).map { it.toDomain() }
+
+
     private fun NotificationDraft.toEntity() = NotificationEntity(
         userId = userId,
         chatId = chatId,

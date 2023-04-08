@@ -7,4 +7,5 @@ interface NotificationPersistencePort {
     fun save(notificationDraft: NotificationDraft)
     fun save(notification: Notification)
     fun selectUnsent(): List<Notification>
+    fun findByUserId(userID: Long): List<Notification>
 }

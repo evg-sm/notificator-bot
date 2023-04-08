@@ -13,4 +13,6 @@ interface NotificationRepository : CrudRepository<NotificationEntity, Long> {
         nativeQuery = true
     )
     fun selectUnsent(now: LocalDateTime): List<NotificationEntity>
+
+    fun findByUserId(userId: Long): List<NotificationEntity>
 }
