@@ -1,5 +1,6 @@
 package com.notificator.bot.application.service.telegram
 
+import com.notificator.bot.application.port.out.NotificationDraftStoragePort
 import com.notificator.bot.application.port.out.NotificationQuery
 import com.notificator.bot.application.service.notification.NotificationBuildHandler
 import com.notificator.bot.application.service.telegram.components.BotCommands
@@ -25,7 +26,8 @@ interface BotCommandHandler {
 @Component
 class BotCommandHandlerImpl(
     private val notificationBuildHandler: NotificationBuildHandler,
-    private val notificationQuery: NotificationQuery
+    private val notificationQuery: NotificationQuery,
+    private val draftStoragePort: NotificationDraftStoragePort
 ) : BotCommandHandler, BotCommands {
 
     companion object : KLogging()
@@ -44,13 +46,15 @@ class BotCommandHandlerImpl(
             START_KEYWORD -> "О чем Вам напомнить?"
             HELP_KEYWORD -> HELP_TEXT
             LIST_KEYWORD -> prettyNotificationList(notificationQuery.get(update.message.from.id))
-            else -> "Пожалуйста, введите корректную команду ${listOf(START_KEYWORD, HELP_KEYWORD)}"
+            else -> "Пожалуйста, введите корректную команду $COMMAND_KEYWORD_LIST}"
         }
 
         execute(SendMessage().apply {
             chatId = update.message.chatId.toString()
             text = responseText
-        })
+        }).also {
+            draftStoragePort.clear(update.message.from.id)
+        }
     }
 
     private fun Update.isCallbackQuery() = hasCallbackQuery()
@@ -70,14 +74,19 @@ class BotCommandHandlerImpl(
     }
 
     private fun prettyNotificationList(list: List<Notification>): String {
-        var rowNum = 0
-        val stringBuilder = StringBuilder()
-        list.forEach { notification ->
-            stringBuilder.append("$rowNum - '${notification.type.pretty()}' '${notification.text}' '${notification.dateTime.pretty()}'")
-                .append("\n")
-            rowNum++
+        return if (list.isNotEmpty()) {
+            var rowNum = 1
+            val stringBuilder = StringBuilder()
+            list.forEach { ntf: Notification ->
+                stringBuilder
+                    .append("$rowNum - '${ntf.text}' '${ntf.type.pretty()}' '${ntf.dateTime.pretty()}'")
+                    .append("\n")
+                rowNum++
+            }
+            stringBuilder.toString()
+        } else {
+            "У Bас пока нет сохраненных уведомлений"
         }
-        return stringBuilder.toString()
     }
 
     private fun NotificationType.pretty(): String = when (this) {

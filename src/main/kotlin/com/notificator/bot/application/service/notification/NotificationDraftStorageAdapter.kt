@@ -16,7 +16,8 @@ class NotificationDraftStorageAdapter: NotificationDraftStoragePort {
         storage[userId] = notificationDraft
     }
 
-    override fun delete(userId: Long) {
+    // todo make auto cleat by ttl
+    override fun clear(userId: Long) {
         storage.remove(userId)
     }
 }

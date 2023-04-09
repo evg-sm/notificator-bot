@@ -8,5 +8,5 @@ interface NotificationDraftStoragePort {
 
     fun set(userId: Long, notificationDraft: NotificationDraft)
 
-    fun delete(userId: Long)
+    fun clear(userId: Long)
 }

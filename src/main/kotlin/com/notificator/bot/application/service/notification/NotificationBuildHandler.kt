@@ -3,8 +3,8 @@ package com.notificator.bot.application.service.notification
 import com.notificator.bot.application.port.out.NotificationDraftStoragePort
 import com.notificator.bot.application.port.out.NotificationPersistencePort
 import com.notificator.bot.application.port.out.UserDetailsPersistencePort
-import com.notificator.bot.domain.NotificationDraft
 import com.notificator.bot.domain.DraftState
+import com.notificator.bot.domain.NotificationDraft
 import com.notificator.bot.domain.NotificationType
 import com.notificator.bot.domain.UserDetails
 import org.springframework.stereotype.Component
@@ -47,54 +47,76 @@ class NotificationBuildHandlerImpl(
 
             execute(SendMessage().apply {
                 chatId = update.message.chatId.toString()
-                text = "Напоминание единоразовое или регулярное?"
+                text = "Уведомдение единоразовое или регулярное?"
             })
         }
 
         if (notificationDraft != null && notificationDraft.draftState == DraftState.INIT) {
             notificationDraftStoragePort.get(userId)?.let { ntf ->
+
                 val newNotificationType = when (messageText) {
                     "единоразовое" -> NotificationType.ONCE
                     "регулярное" -> NotificationType.REGULAR
                     else -> NotificationType.UNDEFINED
                 }
 
-                notificationDraftStoragePort.set(userId, ntf.copy(type = newNotificationType, draftState = DraftState.TYPE_SET))
-
-                execute(SendMessage().apply {
-                    chatId = update.message.chatId.toString()
-                    text = "Введите дату в формате 'dd.mm.YYYY'"
-                })
+                if (newNotificationType == NotificationType.UNDEFINED) {
+                    execute(SendMessage().apply {
+                        chatId = update.message.chatId.toString()
+                        text = "Пожалуйста, укажите тип уведомления 'единоразовое' или 'регулярное'"
+                    })
+                } else {
+                    notificationDraftStoragePort.set(
+                        userId,
+                        ntf.copy(type = newNotificationType, draftState = DraftState.TYPE_SET)
+                    )
+                    execute(SendMessage().apply {
+                        chatId = update.message.chatId.toString()
+                        text = "Введите дату в формате 'dd.mm.YYYY', например: 12.01.2024"
+                    })
+                }
             }
         }
 
         if (notificationDraft != null && notificationDraft.draftState == DraftState.TYPE_SET) {
             notificationDraftStoragePort.get(userId)?.let { ntf ->
-                val newDate = LocalDate.parse(messageText, DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+                runCatching {
+                    LocalDate.parse(messageText, DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+                }.onFailure {
+                    execute(SendMessage().apply {
+                        chatId = update.message.chatId.toString()
+                        text = "Пожалуйста, укажите дату в формате 'dd.mm.YYYY', например: 12.01.2024"
+                    })
+                }.onSuccess { newDate: LocalDate ->
+                    notificationDraftStoragePort.set(userId, ntf.copy(date = newDate, draftState = DraftState.DATE_SET))
 
-                notificationDraftStoragePort.set(userId, ntf.copy(date = newDate, draftState = DraftState.DATE_SET))
-
-                execute(SendMessage().apply {
-                    chatId = update.message.chatId.toString()
-                    text = "Введите время в формате '10:12'"
-                })
+                    execute(SendMessage().apply {
+                        chatId = update.message.chatId.toString()
+                        text = "Введите время в формате 'HH:mm', например: '10:12'"
+                    })
+                }
             }
         }
 
         if (notificationDraft != null && notificationDraft.draftState == DraftState.DATE_SET) {
             notificationDraftStoragePort.get(userId)?.let { ntf ->
-                val newTime = LocalTime.parse(messageText, DateTimeFormatter.ofPattern("HH:mm"))
+                runCatching {
+                    LocalTime.parse(messageText, DateTimeFormatter.ofPattern("HH:mm"))
+                }.onFailure {
+                    execute(SendMessage().apply {
+                        chatId = update.message.chatId.toString()
+                        text = "Пожалуйста, укажите время в формате 'HH:mm', например: '10:12'"
+                    })
+                }.onSuccess { newTime: LocalTime ->
+                    val finalNotification = ntf.copy(time = newTime, draftState = DraftState.TIME_SET)
+                    notificationDraftStoragePort.clear(userId)
+                    notificationPersistencePort.save(finalNotification)
 
-                val finalNotification = ntf.copy(time = newTime, draftState = DraftState.TIME_SET)
-                notificationDraftStoragePort.delete(userId)
-                notificationPersistencePort.save(finalNotification)
-
-                execute(SendMessage().apply {
-                    chatId = update.message.chatId.toString()
-                    text = "Уведомление сохранено успешно!"
-                })
-
-
+                    execute(SendMessage().apply {
+                        chatId = update.message.chatId.toString()
+                        text = "Уведомление сохранено успешно!"
+                    })
+                }
             }
         }
     }

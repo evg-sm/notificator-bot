@@ -20,18 +20,15 @@ class NotificationSenderAdapter(
 
     @Scheduled(cron = "0 */1 * * * *")
     override fun send() {
-        logger.info { "Notification sender start" }
-
         persistencePort.selectUnsent().forEach { notification ->
-
-            logger.info { "notification $notification" }
-
             notificatorBot.execute(
                 SendMessage().apply {
                     chatId = notification.chatId
                     text = notification.text
                 }
-            )
+            ).also {
+                logger.info { "Send notification to user ${notification.userId}" }
+            }
 
             when (notification.type) {
                 NotificationType.ONCE -> persistencePort.save(notification.copy(sendStatus = NotificationSendStatus.SENT))
