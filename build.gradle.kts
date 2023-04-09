@@ -13,7 +13,7 @@ plugins {
 }
 
 group = "com.notificator.bot"
-version = "0.0.1-SNAPSHOT"
+version = "0.0.1"
 
 configurations {
     compileOnly {
@@ -32,7 +32,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    // NotificatorBotApp
+    // actuator
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    // jackson
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     // db
     implementation("com.h2database:h2")
@@ -40,7 +42,6 @@ dependencies {
     // kotlin logging
     implementation("io.github.microutils:kotlin-logging:3.0.5")
     // telegram
-//    implementation("org.telegram:telegrambots:6.5.0")
     implementation("org.telegram:telegrambots-spring-boot-starter:6.5.0")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
@@ -58,6 +59,14 @@ tasks.withType<KotlinCompile> {
     }
 }
 
+tasks.getByName<Jar>("jar") {
+    enabled = true
+}
+
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+springBoot {
+    buildInfo()
 }

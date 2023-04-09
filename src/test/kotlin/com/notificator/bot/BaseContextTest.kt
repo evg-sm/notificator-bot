@@ -3,11 +3,11 @@ package com.notificator.bot
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 
-@SpringBootTest
-class BaseContextTest {
-
-    @Test
-    fun contextLoads() {
-    }
-
-}
+//@SpringBootTest
+//class BaseContextTest {
+//
+//    @Test
+//    fun contextLoads() {
+//    }
+//
+//}

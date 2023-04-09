@@ -25,3 +25,7 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
+
+management.endpoints:
+  enabled-by-default: true
+  web.exposure.include: "*"
