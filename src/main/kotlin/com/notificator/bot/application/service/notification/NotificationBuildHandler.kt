@@ -94,15 +94,26 @@ class NotificationBuildHandlerImpl(
                             text = "Пожалуйста, укажите дату в формате 'dd.mm.YYYY', например: 12.01.2024"
                         })
                     }.onSuccess { newDate: LocalDate ->
-                        notificationDraftStoragePort.set(
-                            userId,
-                            ntf.copy(date = newDate, draftState = DraftState.DATE_SET)
-                        )
 
-                        execute(SendMessage().apply {
-                            chatId = notificationDraft.chatId
-                            text = "Введите время в формате 'HH:mm', например: '10:12'"
-                        })
+                        if (newDate < LocalDate.now()) {
+                            execute(SendMessage().apply {
+                                chatId = notificationDraft.chatId
+                                text =
+                                    "Пожалуйста, укажите дату большую или равную текущей, в формате 'dd.mm.YYYY', например: 12.01.2024"
+                            })
+
+                        } else {
+
+                            notificationDraftStoragePort.set(
+                                userId,
+                                ntf.copy(date = newDate, draftState = DraftState.DATE_SET)
+                            )
+
+                            execute(SendMessage().apply {
+                                chatId = notificationDraft.chatId
+                                text = "Введите время в формате 'HH:mm', например: '10:12'"
+                            })
+                        }
                     }
                 }
             }
