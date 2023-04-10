@@ -8,20 +8,18 @@ class Buttons {
 
     companion object {
 
-        private val START_BUTTON = InlineKeyboardButton("Start")
-        private val HELP_BUTTON = InlineKeyboardButton("Help")
+        const val ONCE_KEYWORD = "#ONCE"
+        const val REGULAR_KEYWORD = "#REGULAR"
+        private val ONCE_TYPE_BUTTON = InlineKeyboardButton("Единоразовое").apply { callbackData = ONCE_KEYWORD }
+        private val REGULAR_TYPE_BUTTON = InlineKeyboardButton("Регулярное").apply { callbackData = REGULAR_KEYWORD }
 
         /**
-         * buttons for response
+         * buttons for response message
          */
-        fun inlineMarkup(): InlineKeyboardMarkup {
-            START_BUTTON.callbackData = "#collback_start_button"
-            HELP_BUTTON.callbackData = "#collback_help_button"
-            val rowInline = listOf(START_BUTTON, HELP_BUTTON)
+        fun notificationTypeButtons(): InlineKeyboardMarkup {
+            val rowInline = listOf(ONCE_TYPE_BUTTON, REGULAR_TYPE_BUTTON)
             val rowsInLine = listOf(rowInline)
-            val markupInline = InlineKeyboardMarkup()
-            markupInline.keyboard = rowsInLine
-            return markupInline
+            return InlineKeyboardMarkup().apply { keyboard = rowsInLine }
         }
     }
 }
