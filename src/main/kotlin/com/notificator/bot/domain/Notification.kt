@@ -9,5 +9,5 @@ data class Notification(
     val type: NotificationType,
     val sendStatus: NotificationSendStatus,
     val text: String,
-    val dateTime: LocalDateTime
+    val sendTime: LocalDateTime
 )

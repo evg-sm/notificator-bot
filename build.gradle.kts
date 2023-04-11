@@ -10,10 +10,12 @@ plugins {
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.jpa") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
+
+    id("nebula.ospackage") version "9.1.1"
 }
 
 group = "com.notificator.bot"
-version = "0.0.4"
+version = "0.0.5"
 
 configurations {
     compileOnly {
@@ -37,7 +39,7 @@ dependencies {
     // jackson
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     // db
-    implementation("com.h2database:h2")
+    implementation("org.postgresql:postgresql")
     implementation("org.flywaydb:flyway-core")
     // kotlin logging
     implementation("io.github.microutils:kotlin-logging:3.0.5")

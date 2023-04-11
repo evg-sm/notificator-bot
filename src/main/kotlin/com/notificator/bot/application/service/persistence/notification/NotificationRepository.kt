@@ -9,7 +9,7 @@ interface NotificationRepository : CrudRepository<NotificationEntity, Long> {
 
     @Query(
         value =
-        "select n.* from bot.notification n where n.send_status='PENDING' and n.date_time = :now for update",
+        "select n.* from bot.notification n where n.send_status='PENDING' and n.send_time = :now for update skip locked",
         nativeQuery = true
     )
     fun selectUnsent(now: LocalDateTime): List<NotificationEntity>

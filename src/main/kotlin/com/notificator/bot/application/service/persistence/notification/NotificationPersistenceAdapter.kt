@@ -35,7 +35,9 @@ class NotificationPersistenceAdapter(
         type = type,
         sendStatus = NotificationSendStatus.PENDING,
         text = text,
-        dateTime = LocalDateTime.of(date, time)
+        sendTime = LocalDateTime.of(date, time),
+        createTime = LocalDateTime.now(),
+        updateTime = LocalDateTime.now()
     )
 
     private fun Notification.toEntity() = NotificationEntity(
@@ -45,7 +47,9 @@ class NotificationPersistenceAdapter(
         type = type,
         sendStatus = sendStatus,
         text = text,
-        dateTime = dateTime
+        sendTime = sendTime,
+        createTime = LocalDateTime.now(),
+        updateTime = LocalDateTime.now()
     )
 
     private fun NotificationEntity.toDomain() = Notification(
@@ -55,6 +59,6 @@ class NotificationPersistenceAdapter(
         type = type,
         sendStatus = sendStatus,
         text = text,
-        dateTime = dateTime
+        sendTime = sendTime
     )
 }

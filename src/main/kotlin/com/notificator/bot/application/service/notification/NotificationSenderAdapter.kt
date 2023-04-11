@@ -34,7 +34,7 @@ class NotificationSenderAdapter(
                 NotificationType.ONCE -> persistencePort.save(notification.copy(sendStatus = NotificationSendStatus.SENT))
 
                 NotificationType.REGULAR ->
-                    persistencePort.save(notification.copy(dateTime = notification.dateTime.plusYears(1L)))
+                    persistencePort.save(notification.copy(sendTime = notification.sendTime.plusYears(1L)))
 
                 NotificationType.UNDEFINED -> Unit
             }

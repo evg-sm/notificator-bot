@@ -3,10 +3,14 @@ package com.notificator.bot.application.service.persistence.notification.entity
 import com.notificator.bot.application.service.persistence.user.entity.UserDetailsEntity
 import com.notificator.bot.domain.NotificationSendStatus
 import com.notificator.bot.domain.NotificationType
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.util.ProxyUtils
 import java.time.LocalDateTime
 import javax.persistence.Column
 import javax.persistence.Entity
+import javax.persistence.EntityListeners
 import javax.persistence.EnumType
 import javax.persistence.Enumerated
 import javax.persistence.GeneratedValue
@@ -16,11 +20,12 @@ import javax.persistence.Table
 
 @Entity
 @Table(schema = "bot", name = "notification")
+@EntityListeners(AuditingEntityListener::class)
 data class NotificationEntity(
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bot.notification_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 
     @Column(name = "user_id")
@@ -40,8 +45,16 @@ data class NotificationEntity(
     @Column(name = "text")
     val text: String,
 
-    @Column(name = "date_time")
-    val dateTime: LocalDateTime,
+    @Column(name = "send_time")
+    val sendTime: LocalDateTime,
+
+    @CreatedDate
+    @Column(name = "create_time", nullable = false, updatable = false)
+    val createTime: LocalDateTime,
+
+    @LastModifiedDate
+    @Column(name = "update_time", nullable = false, updatable = true)
+    val updateTime: LocalDateTime
 ) {
     override fun equals(other: Any?): Boolean {
         other ?: return false

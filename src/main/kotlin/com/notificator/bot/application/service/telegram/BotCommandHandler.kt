@@ -64,7 +64,13 @@ class BotCommandHandlerImpl(
     private fun Update.isTextMessage() = hasMessage() && message.hasText()
 
     private fun handleMessage(update: Update, execute: (sendMessage: SendMessage) -> Unit) {
-        logger.info { "Received text message ${update.message.text}" }
+        update.message?.text?.let {
+            logger.info { "Received text message ${update.message.text}" }
+        }
+        update.callbackQuery?.data?.let {
+            logger.info { "Received callback data ${update.callbackQuery.data}" }
+        }
+
         notificationBuildHandler.handle(update, execute)
     }
 
@@ -74,7 +80,7 @@ class BotCommandHandlerImpl(
             val stringBuilder = StringBuilder()
             list.forEach { ntf: Notification ->
                 stringBuilder
-                    .append("$rowNum - '${ntf.text}' '${ntf.type.pretty()}' '${ntf.dateTime.pretty()}'")
+                    .append("$rowNum - '${ntf.text}' '${ntf.type.pretty()}' '${ntf.sendTime.pretty()}'")
                     .append("\n")
                 rowNum++
             }
