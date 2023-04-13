@@ -65,7 +65,7 @@ class BotCommandHandlerImpl(
 
     private fun handleMessage(update: Update, execute: (sendMessage: SendMessage) -> Unit) {
         update.message?.text?.let {
-            logger.info { "Received text message ${update.message.text}" }
+            logger.info { "Received text message ${String(it.toByteArray(), Charsets.UTF_8)}" }
         }
         update.callbackQuery?.data?.let {
             logger.info { "Received callback data ${update.callbackQuery.data}" }

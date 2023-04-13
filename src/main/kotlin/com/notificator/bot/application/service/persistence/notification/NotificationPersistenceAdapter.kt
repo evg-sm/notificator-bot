@@ -34,7 +34,7 @@ class NotificationPersistenceAdapter(
         chatId = chatId,
         type = type,
         sendStatus = NotificationSendStatus.PENDING,
-        text = text,
+        text = String(text.toByteArray(), Charsets.UTF_8),
         sendTime = LocalDateTime.of(date, time),
         createTime = LocalDateTime.now(),
         updateTime = LocalDateTime.now()
