@@ -10,7 +10,8 @@ data class NotificationDraft(
     val draftState: DraftState,
     val text: String,
     val date: LocalDate = LocalDate.now(),
-    val time: LocalTime = LocalTime.now()
+    val time: LocalTime = LocalTime.now(),
+    var monthCounter: Long = 0
 )
 
 enum class DraftState {

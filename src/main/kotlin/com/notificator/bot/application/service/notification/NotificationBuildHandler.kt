@@ -3,15 +3,20 @@ package com.notificator.bot.application.service.notification
 import com.notificator.bot.application.port.out.NotificationDraftStoragePort
 import com.notificator.bot.application.port.out.NotificationPersistencePort
 import com.notificator.bot.application.port.out.UserDetailsPersistencePort
+import com.notificator.bot.application.service.telegram.NotificatorBot
 import com.notificator.bot.application.service.telegram.components.Buttons
 import com.notificator.bot.application.service.telegram.components.Buttons.Companion.ONCE_KEYWORD
 import com.notificator.bot.application.service.telegram.components.Buttons.Companion.REGULAR_KEYWORD
+import com.notificator.bot.application.service.telegram.components.CalendarButtons
 import com.notificator.bot.domain.DraftState
 import com.notificator.bot.domain.NotificationDraft
 import com.notificator.bot.domain.NotificationType
 import com.notificator.bot.domain.UserDetails
+import mu.KLogging
+import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup
 import org.telegram.telegrambots.meta.api.objects.Update
 import org.telegram.telegrambots.meta.api.objects.User
 import java.time.LocalDate
@@ -26,8 +31,13 @@ interface NotificationBuildHandler {
 class NotificationBuildHandlerImpl(
     private val notificationDraftStoragePort: NotificationDraftStoragePort,
     private val userDetailsPersistencePort: UserDetailsPersistencePort,
-    private val notificationPersistencePort: NotificationPersistencePort
+    private val notificationPersistencePort: NotificationPersistencePort,
+    private val calendarButtons: CalendarButtons,
+    @Lazy
+    private val notificatorBot: NotificatorBot
 ) : NotificationBuildHandler {
+
+    companion object : KLogging()
 
     override fun handle(update: Update, execute: (sendMessage: SendMessage) -> Unit) {
         val userId: Long = update.callbackQuery?.from?.id ?: update.message.from.id
@@ -78,28 +88,56 @@ class NotificationBuildHandlerImpl(
 
                         execute(SendMessage().apply {
                             chatId = notificationDraft.chatId
-                            text = "Введите дату в формате 'dd.mm.YYYY', например: 12.01.2024"
+                            text = "Выберите дату в календаре или введите дату в формате 'dd.mm.YYYY', например: 12.01.2024"
+                            replyMarkup = calendarButtons.calendarInlineKeyboard(LocalDate.now())
                         })
                     }
                 }
             }
 
             if (notificationDraft.draftState == DraftState.TYPE_SET) {
-                notificationDraftStoragePort.get(userId)?.let { ntf ->
+                notificationDraftStoragePort.get(userId)?.let { ntf: NotificationDraft ->
+
+                    val callbackQueryData = update.callbackQuery.data
+
+                    if (callbackQueryData.contains(">") || callbackQueryData.contains("<")) {
+
+                        if (callbackQueryData.contains(">")) {
+                            ntf.monthCounter++
+                        } else {
+                            ntf.monthCounter--
+                        }
+
+                        logger.info { "callbackQuery.message.messageId=${update.callbackQuery.message.messageId}" }
+
+                        notificatorBot.execute(
+                            EditMessageReplyMarkup().apply {
+                                chatId = notificationDraft.chatId
+                                messageId = update.callbackQuery.message.messageId
+                                replyMarkup = calendarButtons.calendarInlineKeyboard(
+                                    LocalDate.now().plusMonths(ntf.monthCounter)
+                                )
+                            })
+
+                        return
+                    }
+
                     runCatching {
-                        LocalDate.parse(update.message.text, DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+                        LocalDate.parse(callbackQueryData, DateTimeFormatter.ofPattern("dd.MM.yyyy"))
                     }.onFailure {
                         execute(SendMessage().apply {
                             chatId = notificationDraft.chatId
-                            text = "Пожалуйста, укажите дату в формате 'dd.mm.YYYY', например: 12.01.2024"
+                            text =
+                                "Пожалуйста, выберите дату в календаре или введите дату в формате 'dd.mm.YYYY', например: 12.01.2024"
+                            replyMarkup = calendarButtons.calendarInlineKeyboard(LocalDate.now())
                         })
                     }.onSuccess { newDate: LocalDate ->
 
                         if (newDate < LocalDate.now()) {
                             execute(SendMessage().apply {
                                 chatId = notificationDraft.chatId
-                                text =
-                                    "Пожалуйста, укажите дату большую или равную текущей, в формате 'dd.mm.YYYY', например: 12.01.2024"
+                                text = "Пожалуйста, укажите дату большую или равную текущей"
+                                replyMarkup = calendarButtons.calendarInlineKeyboard(LocalDate.now())
                             })
 
                         } else {
