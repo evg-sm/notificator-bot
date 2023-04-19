@@ -13,6 +13,8 @@ class CalendarButtons {
     companion object {
         const val IGNORE = "ignore!@#$%^&"
         val WEEK_DAYS = arrayOf("П", "В", "С", "Ч", "П", "С", "В")
+        val FORWARD_CALLBACK = ">"
+        val BACKWARD_CALLBACK = "<"
     }
 
     fun calendarInlineKeyboard(date: LocalDate): InlineKeyboardMarkup {
@@ -40,8 +42,8 @@ class CalendarButtons {
             shift = 0
         }
         val controlsRow: MutableList<InlineKeyboardButton> = ArrayList()
-        controlsRow.add(createButton("<", "<"))
-        controlsRow.add(createButton(">", ">"))
+        controlsRow.add(createButton(BACKWARD_CALLBACK, BACKWARD_CALLBACK))
+        controlsRow.add(createButton(FORWARD_CALLBACK, FORWARD_CALLBACK))
         calendarKeyboard.add(controlsRow)
 
         return InlineKeyboardMarkup().apply {

@@ -8,6 +8,8 @@ import com.notificator.bot.application.service.telegram.components.Buttons
 import com.notificator.bot.application.service.telegram.components.Buttons.Companion.ONCE_KEYWORD
 import com.notificator.bot.application.service.telegram.components.Buttons.Companion.REGULAR_KEYWORD
 import com.notificator.bot.application.service.telegram.components.CalendarButtons
+import com.notificator.bot.application.service.telegram.components.CalendarButtons.Companion.BACKWARD_CALLBACK
+import com.notificator.bot.application.service.telegram.components.CalendarButtons.Companion.FORWARD_CALLBACK
 import com.notificator.bot.domain.DraftState
 import com.notificator.bot.domain.NotificationDraft
 import com.notificator.bot.domain.NotificationType
@@ -96,13 +98,24 @@ class NotificationBuildHandlerImpl(
             }
 
             if (notificationDraft.draftState == DraftState.TYPE_SET) {
+
+                if (update.callbackQuery?.data == null && update.message != null) {
+                    execute(SendMessage().apply {
+                        chatId = notificationDraft.chatId
+                        text = "Пожалуйста, выберите дату в календаре или введите дату в формате 'dd.mm.YYYY', например: 12.01.2024"
+                        replyMarkup = calendarButtons.calendarInlineKeyboard(LocalDate.now())
+                    })
+
+                    return
+                }
+
                 notificationDraftStoragePort.get(userId)?.let { ntf: NotificationDraft ->
 
                     val callbackQueryData = update.callbackQuery.data
 
-                    if (callbackQueryData.contains(">") || callbackQueryData.contains("<")) {
+                    if (callbackQueryData.contains(FORWARD_CALLBACK) || callbackQueryData.contains(BACKWARD_CALLBACK)) {
 
-                        if (callbackQueryData.contains(">")) {
+                        if (callbackQueryData.contains(FORWARD_CALLBACK)) {
                             ntf.monthCounter++
                         } else {
                             ntf.monthCounter--
@@ -127,8 +140,7 @@ class NotificationBuildHandlerImpl(
                     }.onFailure {
                         execute(SendMessage().apply {
                             chatId = notificationDraft.chatId
-                            text =
-                                "Пожалуйста, выберите дату в календаре или введите дату в формате 'dd.mm.YYYY', например: 12.01.2024"
+                            text = "Пожалуйста, выберите дату в календаре или введите дату в формате 'dd.mm.YYYY', например: 12.01.2024"
                             replyMarkup = calendarButtons.calendarInlineKeyboard(LocalDate.now())
                         })
                     }.onSuccess { newDate: LocalDate ->
