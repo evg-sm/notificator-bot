@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter
 
 
 @Component
-class CalendarButtons {
+class CalendarKeyboard {
 
     companion object {
         const val IGNORE = "ignore!@#$%^&"
@@ -17,7 +17,7 @@ class CalendarButtons {
         val BACKWARD_CALLBACK = "<"
     }
 
-    fun calendarInlineKeyboard(date: LocalDate): InlineKeyboardMarkup {
+    fun inlineKeyboard(date: LocalDate): InlineKeyboardMarkup {
         val calendarKeyboard: MutableList<MutableList<InlineKeyboardButton>> = mutableListOf()
 
         // row - Month and Year
