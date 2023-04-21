@@ -2,7 +2,7 @@ package com.notificator.bot.application.service.telegram
 
 import com.notificator.bot.application.port.out.NotificationDraftStoragePort
 import com.notificator.bot.application.port.out.NotificationQuery
-import com.notificator.bot.application.service.notification.NotificationBuildHandler
+import com.notificator.bot.application.port.out.NotificationSenderPort
 import com.notificator.bot.application.service.telegram.components.BotCommands
 import com.notificator.bot.application.service.telegram.components.BotCommands.Companion.ASK_FOR_NOTIFICATION_TEXT
 import com.notificator.bot.application.service.telegram.components.BotCommands.Companion.CANCEL_KEYWORD
@@ -26,23 +26,14 @@ interface BotCommandHandler {
 
 @Component
 class BotCommandHandlerImpl(
-    private val notificationBuildHandler: NotificationBuildHandler,
     private val notificationQuery: NotificationQuery,
-    private val draftStoragePort: NotificationDraftStoragePort
+    private val draftStoragePort: NotificationDraftStoragePort,
+    private val notificationSenderPort: NotificationSenderPort
 ) : BotCommandHandler, BotCommands {
 
     companion object : KLogging()
 
     override fun handle(update: Update, execute: (sendMessage: SendMessage) -> Unit) {
-        when {
-            update.isCommandMessage() -> handleCommandMessage(update, execute)
-            update.isTextMessage() || update.isCallbackQuery() -> handleMessage(update, execute)
-        }
-    }
-
-    private fun Update.isCommandMessage() = hasMessage() && message.hasText() && message.text in COMMAND_KEYWORD_LIST
-
-    private fun handleCommandMessage(update: Update, execute: (sendMessage: SendMessage) -> Unit) {
         val responseText = when (update.message.text) {
             START_KEYWORD -> ASK_FOR_NOTIFICATION_TEXT
             HELP_KEYWORD -> HELP_TEXT
@@ -50,35 +41,19 @@ class BotCommandHandlerImpl(
             CANCEL_KEYWORD -> "Отмена"
             else -> "Пожалуйста, введите корректную команду $COMMAND_KEYWORD_LIST}"
         }
-
-        execute(SendMessage().apply {
-            chatId = update.message.chatId.toString()
-            text = responseText
-        }).also {
+        notificationSenderPort.sendMessage(
+            toChatId = update.message.chatId.toString(),
+            messageText = responseText
+        ).also {
             draftStoragePort.clear(update.message.from.id)
         }
     }
 
-    private fun Update.isCallbackQuery() = hasCallbackQuery()
-
-    private fun Update.isTextMessage() = hasMessage() && message.hasText()
-
-    private fun handleMessage(update: Update, execute: (sendMessage: SendMessage) -> Unit) {
-        update.message?.text?.let {
-            logger.info { "Received text message ${String(it.toByteArray(), Charsets.UTF_8)}" }
-        }
-        update.callbackQuery?.data?.let {
-            logger.info { "Received callback data ${update.callbackQuery.data}" }
-        }
-
-        notificationBuildHandler.handle(update, execute)
-    }
-
-    private fun prettyNotificationList(list: List<Notification>): String {
-        return if (list.isNotEmpty()) {
+    private fun prettyNotificationList(notifications: List<Notification>): String {
+        return if (notifications.isNotEmpty()) {
             var rowNum = 1
             val stringBuilder = StringBuilder()
-            list.forEach { ntf: Notification ->
+            notifications.forEach { ntf: Notification ->
                 stringBuilder
                     .append("$rowNum - '${ntf.text}' '${ntf.type.pretty()}' '${ntf.sendTime.pretty()}'")
                     .append("\n")

@@ -3,6 +3,7 @@ package com.notificator.bot.application.service.telegram
 import com.notificator.bot.application.port.`in`.NotificationListener
 import com.notificator.bot.application.service.telegram.components.BotCommands
 import com.notificator.bot.application.service.telegram.components.BotCommands.Companion.LIST_OF_COMMANDS
+import mu.KLogging
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
@@ -15,8 +16,11 @@ import javax.annotation.PostConstruct
 class NotificatorBot(
     @Value("\${app.telegram.token}") private val telegramToken: String,
     @Value("\${app.telegram.bot-username}") private val botUsername: String,
-    private val botCommandHandler: BotCommandHandler
+    private val botCommandHandler: BotCommandHandler,
+    private val notificationBuildHandler: NotificationBuildHandler
 ) : TelegramLongPollingBot(telegramToken), BotCommands, NotificationListener {
+
+    companion object : KLogging()
 
     override fun getBotUsername(): String = botUsername
 
@@ -28,6 +32,20 @@ class NotificatorBot(
         execute(SetMyCommands(LIST_OF_COMMANDS, BotCommandScopeDefault(), null))
     }
 
-    override fun onUpdateReceived(update: Update) = botCommandHandler.handle(update, ::execute)
+    override fun onUpdateReceived(update: Update) {
+        update.message?.text?.let {
+            logger.info { "Received text message ${String(it.toByteArray(), Charsets.UTF_8)}" }
+        }
+        update.callbackQuery?.data?.let {
+            logger.info { "Received callback data ${update.callbackQuery.data}" }
+        }
 
+        when {
+            update.isCommandMessage() -> botCommandHandler.handle(update, ::execute)
+            else -> notificationBuildHandler.handle(update, ::execute)
+        }
+    }
+
+    private fun Update.isCommandMessage() =
+        hasMessage() && message.hasText() && message.text in BotCommands.COMMAND_KEYWORD_LIST
 }

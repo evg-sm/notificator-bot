@@ -6,20 +6,26 @@ import com.notificator.bot.application.service.telegram.NotificatorBot
 import com.notificator.bot.domain.NotificationSendStatus
 import com.notificator.bot.domain.NotificationType
 import mu.KLogging
+import org.springframework.context.annotation.Lazy
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup
+import org.telegram.telegrambots.meta.api.objects.MessageEntity
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard
 
 @Component
 class NotificationSenderAdapter(
     private val persistencePort: NotificationPersistencePort,
+    @Lazy
     private val notificatorBot: NotificatorBot
 ) : NotificationSenderPort {
 
     companion object : KLogging()
 
     @Scheduled(cron = "0 */1 * * * *")
-    override fun send() {
+    fun sendScheduled() {
         persistencePort.selectUnsent().forEach { notification ->
             notificatorBot.execute(
                 SendMessage().apply {
@@ -39,5 +45,31 @@ class NotificationSenderAdapter(
                 NotificationType.UNDEFINED -> Unit
             }
         }
+    }
+
+    override fun sendMessage(toChatId: String, messageText: String, keyboard: ReplyKeyboard?) {
+        notificatorBot.execute(
+            SendMessage().apply {
+                chatId = toChatId
+                text = messageText
+                replyMarkup = keyboard
+                entities = listOf(
+                    MessageEntity().apply {
+                        offset = 0
+                        length = messageText.length
+                        type = "bold"
+                    })
+            }
+        )
+    }
+
+    override fun sendEditMessageReplyMarkup(toChatId: String, toMessageId: Int, keyboard: InlineKeyboardMarkup) {
+        notificatorBot.execute(
+            EditMessageReplyMarkup().apply {
+                chatId = toChatId
+                messageId = toMessageId
+                replyMarkup = keyboard
+            })
+
     }
 }
