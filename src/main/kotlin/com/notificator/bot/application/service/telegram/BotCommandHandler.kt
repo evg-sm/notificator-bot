@@ -12,11 +12,13 @@ import com.notificator.bot.application.service.telegram.components.BotCommands.C
 import com.notificator.bot.application.service.telegram.components.BotCommands.Companion.LIST_KEYWORD
 import com.notificator.bot.application.service.telegram.components.BotCommands.Companion.START_KEYWORD
 import com.notificator.bot.domain.Notification
+import com.notificator.bot.domain.NotificationSendStatus
 import com.notificator.bot.domain.NotificationType
 import mu.KLogging
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.Update
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -37,23 +39,30 @@ class BotCommandHandlerImpl(
         val responseText = when (update.message.text) {
             START_KEYWORD -> ASK_FOR_NOTIFICATION_TEXT
             HELP_KEYWORD -> HELP_TEXT
-            LIST_KEYWORD -> prettyNotificationList(notificationQuery.get(update.message.from.id))
+            LIST_KEYWORD -> getUserNotifications(update.message.from.id)
             CANCEL_KEYWORD -> "Отмена"
             else -> "Пожалуйста, введите корректную команду $COMMAND_KEYWORD_LIST}"
+        }.also {
+            draftStoragePort.clear(update.message.from.id)
         }
         notificationSenderPort.sendMessage(
             toChatId = update.message.chatId.toString(),
             messageText = responseText
-        ).also {
-            draftStoragePort.clear(update.message.from.id)
-        }
+        )
     }
 
-    private fun prettyNotificationList(notifications: List<Notification>): String {
-        return if (notifications.isNotEmpty()) {
+    private fun getUserNotifications(userId: Long) : String {
+        return notificationQuery.get(userId).filter {
+                ntf -> ntf.sendStatus != NotificationSendStatus.SENT
+                && ntf.sendTime.toLocalDate() >= LocalDate.now()
+        }.prettyNotificationList()
+    }
+
+    private fun List<Notification>.prettyNotificationList(): String {
+        return if (isNotEmpty()) {
             var rowNum = 1
             val stringBuilder = StringBuilder()
-            notifications.forEach { ntf: Notification ->
+            forEach { ntf: Notification ->
                 stringBuilder
                     .append("$rowNum - '${ntf.text}' '${ntf.type.pretty()}' '${ntf.sendTime.pretty()}'")
                     .append("\n")
