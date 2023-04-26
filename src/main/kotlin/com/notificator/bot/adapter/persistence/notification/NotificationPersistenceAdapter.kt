@@ -1,7 +1,7 @@
-package com.notificator.bot.application.service.persistence.notification
+package com.notificator.bot.adapter.persistence.notification
 
 import com.notificator.bot.application.port.out.NotificationPersistencePort
-import com.notificator.bot.application.service.persistence.notification.entity.NotificationEntity
+import com.notificator.bot.adapter.persistence.notification.entity.NotificationEntity
 import com.notificator.bot.domain.Notification
 import com.notificator.bot.domain.NotificationDraft
 import com.notificator.bot.domain.NotificationSendStatus

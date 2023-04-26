@@ -1,8 +1,8 @@
-package com.notificator.bot.application.service.telegram
+package com.notificator.bot.adapter.telegram
 
 import com.notificator.bot.application.port.`in`.NotificationListener
-import com.notificator.bot.application.service.telegram.components.BotCommands
-import com.notificator.bot.application.service.telegram.components.BotCommands.Companion.LIST_OF_COMMANDS
+import com.notificator.bot.adapter.telegram.components.BotCommands
+import com.notificator.bot.adapter.telegram.components.BotCommands.Companion.LIST_OF_COMMANDS
 import mu.KLogging
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component

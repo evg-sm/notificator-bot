@@ -1,4 +1,4 @@
-package com.notificator.bot.application.service.persistence.user.entity
+package com.notificator.bot.adapter.persistence.user.entity
 
 import org.springframework.data.util.ProxyUtils
 import javax.persistence.Column

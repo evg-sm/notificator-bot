@@ -1,6 +1,6 @@
-package com.notificator.bot.application.service.persistence.notification
+package com.notificator.bot.adapter.persistence.notification
 
-import com.notificator.bot.application.service.persistence.notification.entity.NotificationEntity
+import com.notificator.bot.adapter.persistence.notification.entity.NotificationEntity
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import java.time.LocalDateTime

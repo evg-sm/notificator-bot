@@ -1,6 +1,6 @@
-package com.notificator.bot.application.service.persistence.notification.entity
+package com.notificator.bot.adapter.persistence.notification.entity
 
-import com.notificator.bot.application.service.persistence.user.entity.UserDetailsEntity
+import com.notificator.bot.adapter.persistence.user.entity.UserDetailsEntity
 import com.notificator.bot.domain.NotificationSendStatus
 import com.notificator.bot.domain.NotificationType
 import org.springframework.data.annotation.CreatedDate

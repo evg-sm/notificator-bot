@@ -1,16 +1,16 @@
-package com.notificator.bot.application.service.telegram
+package com.notificator.bot.adapter.telegram
 
 import com.notificator.bot.application.port.out.NotificationDraftStoragePort
 import com.notificator.bot.application.port.out.NotificationQuery
 import com.notificator.bot.application.port.out.NotificationSenderPort
-import com.notificator.bot.application.service.telegram.components.BotCommands
-import com.notificator.bot.application.service.telegram.components.BotCommands.Companion.ASK_FOR_NOTIFICATION_TEXT
-import com.notificator.bot.application.service.telegram.components.BotCommands.Companion.CANCEL_KEYWORD
-import com.notificator.bot.application.service.telegram.components.BotCommands.Companion.COMMAND_KEYWORD_LIST
-import com.notificator.bot.application.service.telegram.components.BotCommands.Companion.HELP_KEYWORD
-import com.notificator.bot.application.service.telegram.components.BotCommands.Companion.HELP_TEXT
-import com.notificator.bot.application.service.telegram.components.BotCommands.Companion.LIST_KEYWORD
-import com.notificator.bot.application.service.telegram.components.BotCommands.Companion.START_KEYWORD
+import com.notificator.bot.adapter.telegram.components.BotCommands
+import com.notificator.bot.adapter.telegram.components.BotCommands.Companion.ASK_FOR_NOTIFICATION_TEXT
+import com.notificator.bot.adapter.telegram.components.BotCommands.Companion.CANCEL_KEYWORD
+import com.notificator.bot.adapter.telegram.components.BotCommands.Companion.COMMAND_KEYWORD_LIST
+import com.notificator.bot.adapter.telegram.components.BotCommands.Companion.HELP_KEYWORD
+import com.notificator.bot.adapter.telegram.components.BotCommands.Companion.HELP_TEXT
+import com.notificator.bot.adapter.telegram.components.BotCommands.Companion.LIST_KEYWORD
+import com.notificator.bot.adapter.telegram.components.BotCommands.Companion.START_KEYWORD
 import com.notificator.bot.domain.Notification
 import com.notificator.bot.domain.NotificationSendStatus
 import com.notificator.bot.domain.NotificationType

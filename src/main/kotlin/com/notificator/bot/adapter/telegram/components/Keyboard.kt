@@ -1,4 +1,4 @@
-package com.notificator.bot.application.service.telegram.components
+package com.notificator.bot.adapter.telegram.components
 
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup

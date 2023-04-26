@@ -1,15 +1,15 @@
-package com.notificator.bot.application.service.telegram
+package com.notificator.bot.adapter.telegram
 
 import com.notificator.bot.application.port.out.NotificationDraftStoragePort
 import com.notificator.bot.application.port.out.NotificationPersistencePort
 import com.notificator.bot.application.port.out.NotificationSenderPort
 import com.notificator.bot.application.port.out.UserDetailsPersistencePort
-import com.notificator.bot.application.service.telegram.components.CalendarKeyboard
-import com.notificator.bot.application.service.telegram.components.CalendarKeyboard.Companion.BACKWARD_CALLBACK
-import com.notificator.bot.application.service.telegram.components.CalendarKeyboard.Companion.FORWARD_CALLBACK
-import com.notificator.bot.application.service.telegram.components.Keyboard
-import com.notificator.bot.application.service.telegram.components.Keyboard.Companion.ONCE_KEYWORD
-import com.notificator.bot.application.service.telegram.components.Keyboard.Companion.REGULAR_KEYWORD
+import com.notificator.bot.adapter.telegram.components.CalendarKeyboard
+import com.notificator.bot.adapter.telegram.components.CalendarKeyboard.Companion.BACKWARD_CALLBACK
+import com.notificator.bot.adapter.telegram.components.CalendarKeyboard.Companion.FORWARD_CALLBACK
+import com.notificator.bot.adapter.telegram.components.Keyboard
+import com.notificator.bot.adapter.telegram.components.Keyboard.Companion.ONCE_KEYWORD
+import com.notificator.bot.adapter.telegram.components.Keyboard.Companion.REGULAR_KEYWORD
 import com.notificator.bot.domain.DraftState
 import com.notificator.bot.domain.NotificationDraft
 import com.notificator.bot.domain.NotificationType

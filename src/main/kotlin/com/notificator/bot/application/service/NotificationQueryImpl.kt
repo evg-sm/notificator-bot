@@ -1,4 +1,4 @@
-package com.notificator.bot.application.service.notification
+package com.notificator.bot.application.service
 
 import com.notificator.bot.application.port.out.NotificationPersistencePort
 import com.notificator.bot.application.port.out.NotificationQuery
