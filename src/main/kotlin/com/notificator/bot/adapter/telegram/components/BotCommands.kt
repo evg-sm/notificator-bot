@@ -10,13 +10,15 @@ interface BotCommands {
         const val HELP_KEYWORD = "/help"
         const val LIST_KEYWORD = "/list"
         const val CANCEL_KEYWORD = "/cancel"
+        const val EDIT_KEYWORD = "/edit"
 
-        val COMMAND_KEYWORD_LIST = listOf(START_KEYWORD, HELP_KEYWORD, LIST_KEYWORD, CANCEL_KEYWORD)
+        val COMMAND_KEYWORD_LIST = listOf(START_KEYWORD, HELP_KEYWORD, LIST_KEYWORD, CANCEL_KEYWORD, EDIT_KEYWORD)
 
         val LIST_OF_COMMANDS = listOf(
             BotCommand(START_KEYWORD, "start bot"),
+            BotCommand(EDIT_KEYWORD, "edit user notifications"),
+            BotCommand(LIST_KEYWORD, "list of user notifications"),
             BotCommand(HELP_KEYWORD, "bot help"),
-            BotCommand(LIST_KEYWORD, "list of users notifications"),
             BotCommand(CANCEL_KEYWORD, "cancel")
         )
 

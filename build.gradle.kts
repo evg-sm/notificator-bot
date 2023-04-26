@@ -15,7 +15,7 @@ plugins {
 }
 
 group = "com.notificator.bot"
-version = "0.0.7"
+version = "0.0.8"
 
 configurations {
     compileOnly {
@@ -34,6 +34,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+    implementation("org.springframework.boot:spring-boot-devtools")
     // actuator
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     // jackson
@@ -50,6 +52,9 @@ dependencies {
 
     // test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+    testImplementation(platform("org.testcontainers:testcontainers-bom:1.17.4"))
+    testImplementation("org.testcontainers:postgresql")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 }

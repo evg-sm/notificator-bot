@@ -63,6 +63,16 @@ class NotificationSenderAdapter(
         )
     }
 
+    override fun sendMessageAsLink(toChatId: String, messageText: String) {
+        notificatorBot.execute(
+            SendMessage().apply {
+                chatId = toChatId
+                text = "<a href='$messageText'>Редактирование уведомлений</a>"
+                parseMode = "HTML"
+            }
+        )
+    }
+
     override fun sendEditMessageReplyMarkup(toChatId: String, toMessageId: Int, keyboard: InlineKeyboardMarkup) {
         notificatorBot.execute(
             EditMessageReplyMarkup().apply {
