@@ -52,6 +52,7 @@ dependencies {
 
     // test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("io.kotest:kotest-assertions-core:5.0.3")
 
     testImplementation(platform("org.testcontainers:testcontainers-bom:1.17.4"))
     testImplementation("org.testcontainers:postgresql")

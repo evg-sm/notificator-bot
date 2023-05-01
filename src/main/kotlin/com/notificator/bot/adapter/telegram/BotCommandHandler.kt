@@ -47,7 +47,7 @@ class BotCommandHandlerImpl(
             EDIT_KEYWORD -> sendEditLink(update)
             else -> sendCommandResponse(update, "Пожалуйста, введите корректную команду $COMMAND_KEYWORD_LIST}")
         }.also {
-            draftStoragePort.clear(update.message.from.id)
+            draftStoragePort.removeByUserId(update.message.from.id)
         }
     }
 

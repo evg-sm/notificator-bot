@@ -50,7 +50,7 @@ class NotificationBuildHandlerImpl(
                     chatId = update.message.chatId.toString(),
                     draftState = DraftState.INIT,
                     type = NotificationType.UNDEFINED,
-                    text = update.message.text,
+                    text = update.message.text
                 )
             )
             notificationSenderPort.sendMessage(
@@ -169,7 +169,7 @@ class NotificationBuildHandlerImpl(
                         )
                     }.onSuccess { newTime: LocalTime ->
                         val finalNotification = ntf.copy(time = newTime, draftState = DraftState.TIME_SET)
-                        notificationDraftStoragePort.clear(userId)
+                        notificationDraftStoragePort.removeByUserId(userId)
                         notificationPersistencePort.save(finalNotification)
                         notificationSenderPort.sendMessage(
                             toChatId = notificationDraft.chatId,
