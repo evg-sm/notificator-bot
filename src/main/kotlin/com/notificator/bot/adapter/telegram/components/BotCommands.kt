@@ -15,16 +15,17 @@ interface BotCommands {
         val COMMAND_KEYWORD_LIST = listOf(START_KEYWORD, HELP_KEYWORD, LIST_KEYWORD, CANCEL_KEYWORD, EDIT_KEYWORD)
 
         val LIST_OF_COMMANDS = listOf(
-            BotCommand(START_KEYWORD, "start bot"),
-            BotCommand(EDIT_KEYWORD, "edit user notifications"),
-            BotCommand(LIST_KEYWORD, "list of user notifications"),
-            BotCommand(HELP_KEYWORD, "bot help"),
-            BotCommand(CANCEL_KEYWORD, "cancel")
+            BotCommand(START_KEYWORD, "Создать уведомление"),
+            BotCommand(EDIT_KEYWORD, "Редактировать уведомления"),
+            BotCommand(LIST_KEYWORD, "Список уведомлений"),
+            BotCommand(HELP_KEYWORD, "Помощь"),
+            BotCommand(CANCEL_KEYWORD, "Отмена")
         )
 
         const val ASK_FOR_NOTIFICATION_TEXT = "О чем Вам напомнить?"
 
         val HELP_TEXT =
+            // todo дописать
             """
             Приветствую! 
             Бот предназначен для формирования и отправки уведомлений.

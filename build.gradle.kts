@@ -15,7 +15,7 @@ plugins {
 }
 
 group = "com.notificator.bot"
-version = "0.0.8"
+version = "0.0.9"
 
 configurations {
     compileOnly {

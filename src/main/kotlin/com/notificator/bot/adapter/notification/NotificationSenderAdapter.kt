@@ -1,8 +1,8 @@
 package com.notificator.bot.adapter.notification
 
+import com.notificator.bot.adapter.telegram.NotificatorBot
 import com.notificator.bot.application.port.out.NotificationPersistencePort
 import com.notificator.bot.application.port.out.NotificationSenderPort
-import com.notificator.bot.adapter.telegram.NotificatorBot
 import com.notificator.bot.domain.NotificationSendStatus
 import com.notificator.bot.domain.NotificationType
 import mu.KLogging
@@ -39,7 +39,16 @@ class NotificationSenderAdapter(
             when (notification.type) {
                 NotificationType.ONCE -> persistencePort.save(notification.copy(sendStatus = NotificationSendStatus.SENT))
 
-                NotificationType.REGULAR ->
+                NotificationType.EVERY_DAY ->
+                    persistencePort.save(notification.copy(sendTime = notification.sendTime.plusDays(1L)))
+
+                NotificationType.EVERY_WEEK ->
+                    persistencePort.save(notification.copy(sendTime = notification.sendTime.plusWeeks(1L)))
+
+                NotificationType.EVERY_MONTH ->
+                    persistencePort.save(notification.copy(sendTime = notification.sendTime.plusMonths(1L)))
+
+                NotificationType.EVERY_YEAR ->
                     persistencePort.save(notification.copy(sendTime = notification.sendTime.plusYears(1L)))
 
                 NotificationType.UNDEFINED -> Unit

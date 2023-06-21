@@ -8,8 +8,11 @@ import com.notificator.bot.adapter.telegram.components.CalendarKeyboard
 import com.notificator.bot.adapter.telegram.components.CalendarKeyboard.Companion.BACKWARD_CALLBACK
 import com.notificator.bot.adapter.telegram.components.CalendarKeyboard.Companion.FORWARD_CALLBACK
 import com.notificator.bot.adapter.telegram.components.Keyboard
+import com.notificator.bot.adapter.telegram.components.Keyboard.Companion.EVERY_DAY_KEYWORD
+import com.notificator.bot.adapter.telegram.components.Keyboard.Companion.EVERY_MONTH_KEYWORD
+import com.notificator.bot.adapter.telegram.components.Keyboard.Companion.EVERY_WEEK_KEYWORD
 import com.notificator.bot.adapter.telegram.components.Keyboard.Companion.ONCE_KEYWORD
-import com.notificator.bot.adapter.telegram.components.Keyboard.Companion.REGULAR_KEYWORD
+import com.notificator.bot.adapter.telegram.components.Keyboard.Companion.EVERY_YEAR_KEYWORD
 import com.notificator.bot.domain.DraftState
 import com.notificator.bot.domain.NotificationDraft
 import com.notificator.bot.domain.NotificationType
@@ -55,7 +58,7 @@ class NotificationBuildHandlerImpl(
             )
             notificationSenderPort.sendMessage(
                 toChatId = update.message.chatId.toString(),
-                messageText = "Уведомдение единоразовое или регулярное?",
+                messageText = "Укажите частоту уведомдения?",
                 keyboard = keyboard.notificationTypeInlineKeyboard()
             )
 
@@ -67,14 +70,17 @@ class NotificationBuildHandlerImpl(
                     if (callbackData == null) {
                         notificationSenderPort.sendMessage(
                             toChatId = update.message.chatId.toString(),
-                            messageText = "Пожалуйста, укажите тип уведомдения единоразовое или регулярное?",
+                            messageText = "Пожалуйста, укажите частоту уведомдения?",
                             keyboard = keyboard.notificationTypeInlineKeyboard()
                         )
                     } else {
 
                         val newNotificationType = when (callbackData) {
                             ONCE_KEYWORD -> NotificationType.ONCE
-                            REGULAR_KEYWORD -> NotificationType.REGULAR
+                            EVERY_DAY_KEYWORD -> NotificationType.EVERY_DAY
+                            EVERY_WEEK_KEYWORD -> NotificationType.EVERY_WEEK
+                            EVERY_MONTH_KEYWORD -> NotificationType.EVERY_MONTH
+                            EVERY_YEAR_KEYWORD -> NotificationType.EVERY_YEAR
                             else -> NotificationType.UNDEFINED
                         }
                         notificationDraftStoragePort.set(

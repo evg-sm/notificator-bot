@@ -5,6 +5,8 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 @Component
@@ -22,7 +24,12 @@ class CalendarKeyboard {
 
         // row - Month and Year
         val headerRow: MutableList<InlineKeyboardButton> = mutableListOf()
-        headerRow.add(createButton(IGNORE, date.format(DateTimeFormatter.ofPattern("MMMM yyyy"))))
+        headerRow.add(
+            createButton(
+                IGNORE,
+                date.format(DateTimeFormatter.ofPattern("MMMM yyyy").localizedBy(Locale.forLanguageTag("ru")))
+            )
+        )
         calendarKeyboard.add(headerRow)
 
         // row - Days of the week

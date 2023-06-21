@@ -89,8 +89,11 @@ class BotCommandHandlerImpl(
     }
 
     private fun NotificationType.pretty(): String = when (this) {
-        NotificationType.REGULAR -> "регулярное"
         NotificationType.ONCE -> "единоразовое"
+        NotificationType.EVERY_DAY -> "каждый день"
+        NotificationType.EVERY_WEEK -> "каждую неделю"
+        NotificationType.EVERY_MONTH -> "каждый месяц"
+        NotificationType.EVERY_YEAR -> "каждый год"
         NotificationType.UNDEFINED -> "не определено"
     }
 
