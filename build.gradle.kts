@@ -15,7 +15,7 @@ plugins {
 }
 
 group = "com.notificator.bot"
-version = "0.0.9"
+version = "0.1.0"
 
 configurations {
     compileOnly {
@@ -47,12 +47,14 @@ dependencies {
     implementation("io.github.microutils:kotlin-logging:3.0.5")
     // telegram
     implementation("org.telegram:telegrambots-spring-boot-starter:6.5.0")
+    // cache
+    implementation("com.github.ben-manes.caffeine:caffeine")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
     // test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("io.kotest:kotest-assertions-core:5.0.3")
+    testImplementation("io.kotest:kotest-assertions-core:5.5.5")
 
     testImplementation(platform("org.testcontainers:testcontainers-bom:1.17.4"))
     testImplementation("org.testcontainers:postgresql")

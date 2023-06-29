@@ -1,9 +1,9 @@
 package com.notificator.bot.adapter.telegram
 
-import com.notificator.bot.application.port.out.NotificationDraftStoragePort
-import com.notificator.bot.application.port.out.NotificationPersistencePort
+import com.notificator.bot.application.port.out.DraftNotificationStoragePort
+import com.notificator.bot.application.port.out.NotificationStoragePort
 import com.notificator.bot.application.port.out.NotificationSenderPort
-import com.notificator.bot.application.port.out.UserDetailsPersistencePort
+import com.notificator.bot.application.port.out.UserDetailStoragePort
 import com.notificator.bot.adapter.telegram.components.CalendarKeyboard
 import com.notificator.bot.adapter.telegram.components.CalendarKeyboard.Companion.BACKWARD_CALLBACK
 import com.notificator.bot.adapter.telegram.components.CalendarKeyboard.Companion.FORWARD_CALLBACK
@@ -30,9 +30,9 @@ interface NotificationBuildHandler {
 
 @Component
 class NotificationBuildHandlerImpl(
-    private val notificationDraftStoragePort: NotificationDraftStoragePort,
-    private val userDetailsPersistencePort: UserDetailsPersistencePort,
-    private val notificationPersistencePort: NotificationPersistencePort,
+    private val draftNotificationStoragePort: DraftNotificationStoragePort,
+    private val userDetailStoragePort: UserDetailStoragePort,
+    private val notificationStoragePort: NotificationStoragePort,
     private val keyboard: Keyboard,
     private val calendarKeyboard: CalendarKeyboard,
     private val notificationSenderPort: NotificationSenderPort,
@@ -43,10 +43,10 @@ class NotificationBuildHandlerImpl(
     override fun handle(update: Update, execute: (sendMessage: SendMessage) -> Unit) {
         val userId: Long = update.callbackQuery?.from?.id ?: update.message.from.id
         val callbackData: String? = update.callbackQuery?.data
-        val notificationDraft: NotificationDraft? = notificationDraftStoragePort.get(userId)
+        val notificationDraft: NotificationDraft? = draftNotificationStoragePort.get(userId)
 
         if (notificationDraft == null) {
-            notificationDraftStoragePort.set(
+            draftNotificationStoragePort.set(
                 userId,
                 NotificationDraft(
                     userId = userId,
@@ -65,7 +65,7 @@ class NotificationBuildHandlerImpl(
         } else {
 
             if (notificationDraft.draftState == DraftState.INIT) {
-                notificationDraftStoragePort.get(userId)?.let { ntf ->
+                draftNotificationStoragePort.get(userId)?.let { ntf ->
 
                     if (callbackData == null) {
                         notificationSenderPort.sendMessage(
@@ -83,7 +83,7 @@ class NotificationBuildHandlerImpl(
                             EVERY_YEAR_KEYWORD -> NotificationType.EVERY_YEAR
                             else -> NotificationType.UNDEFINED
                         }
-                        notificationDraftStoragePort.set(
+                        draftNotificationStoragePort.set(
                             userId,
                             ntf.copy(type = newNotificationType, draftState = DraftState.TYPE_SET)
                         )
@@ -107,7 +107,7 @@ class NotificationBuildHandlerImpl(
                     return
                 }
 
-                notificationDraftStoragePort.get(userId)?.let { ntf: NotificationDraft ->
+                draftNotificationStoragePort.get(userId)?.let { ntf: NotificationDraft ->
 
                     val callbackQueryData = update.callbackQuery.data
 
@@ -150,7 +150,7 @@ class NotificationBuildHandlerImpl(
 
                         } else {
 
-                            notificationDraftStoragePort.set(
+                            draftNotificationStoragePort.set(
                                 userId,
                                 ntf.copy(date = newDate, draftState = DraftState.DATE_SET)
                             )
@@ -164,7 +164,7 @@ class NotificationBuildHandlerImpl(
             }
 
             if (notificationDraft.draftState == DraftState.DATE_SET) {
-                notificationDraftStoragePort.get(update.message.from.id)?.let { ntf ->
+                draftNotificationStoragePort.get(update.message.from.id)?.let { ntf ->
 
                     runCatching {
                         LocalTime.parse(update.message.text, DateTimeFormatter.ofPattern("HH:mm"))
@@ -175,8 +175,8 @@ class NotificationBuildHandlerImpl(
                         )
                     }.onSuccess { newTime: LocalTime ->
                         val finalNotification = ntf.copy(time = newTime, draftState = DraftState.TIME_SET)
-                        notificationDraftStoragePort.removeByUserId(userId)
-                        notificationPersistencePort.save(finalNotification)
+                        draftNotificationStoragePort.invalidateByUserId(userId)
+                        notificationStoragePort.save(finalNotification)
                         notificationSenderPort.sendMessage(
                             toChatId = notificationDraft.chatId,
                             messageText = "Уведомление сохранено успешно!"

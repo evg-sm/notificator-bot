@@ -1,15 +1,15 @@
 package com.notificator.bot.application.service
 
-import com.notificator.bot.application.port.out.NotificationPersistencePort
+import com.notificator.bot.application.port.out.NotificationStoragePort
 import com.notificator.bot.application.port.out.NotificationQuery
 import com.notificator.bot.domain.Notification
 import org.springframework.stereotype.Component
 
 @Component
 class NotificationQueryImpl(
-    private val notificationPersistencePort: NotificationPersistencePort
+    private val notificationStoragePort: NotificationStoragePort
 ): NotificationQuery {
 
     override fun get(userId: Long): List<Notification> =
-        notificationPersistencePort.findByUserId(userId)
+        notificationStoragePort.findByUserId(userId)
 }

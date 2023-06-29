@@ -1,7 +1,7 @@
 package com.notificator.bot.adapter.notification
 
 import com.notificator.bot.adapter.telegram.NotificatorBot
-import com.notificator.bot.application.port.out.NotificationPersistencePort
+import com.notificator.bot.application.port.out.NotificationStoragePort
 import com.notificator.bot.application.port.out.NotificationSenderPort
 import com.notificator.bot.domain.NotificationSendStatus
 import com.notificator.bot.domain.NotificationType
@@ -17,7 +17,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard
 
 @Component
 class NotificationSenderAdapter(
-    private val persistencePort: NotificationPersistencePort,
+    private val persistencePort: NotificationStoragePort,
     @Lazy
     private val notificatorBot: NotificatorBot
 ) : NotificationSenderPort {

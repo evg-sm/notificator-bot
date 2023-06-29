@@ -1,6 +1,6 @@
 package com.notificator.bot.adapter.persistence.notification
 
-import com.notificator.bot.application.port.out.NotificationPersistencePort
+import com.notificator.bot.application.port.out.NotificationStoragePort
 import com.notificator.bot.adapter.persistence.notification.entity.NotificationEntity
 import com.notificator.bot.domain.Notification
 import com.notificator.bot.domain.NotificationDraft
@@ -10,9 +10,9 @@ import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
 @Repository
-class NotificationPersistenceAdapter(
+class NotificationStorageAdapter(
     private val repository: NotificationRepository
-) : NotificationPersistencePort {
+) : NotificationStoragePort {
 
     override fun save(notificationDraft: NotificationDraft) {
         repository.save(notificationDraft.toEntity())

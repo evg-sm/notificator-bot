@@ -9,7 +9,7 @@ import com.notificator.bot.adapter.telegram.components.BotCommands.Companion.HEL
 import com.notificator.bot.adapter.telegram.components.BotCommands.Companion.HELP_TEXT
 import com.notificator.bot.adapter.telegram.components.BotCommands.Companion.LIST_KEYWORD
 import com.notificator.bot.adapter.telegram.components.BotCommands.Companion.START_KEYWORD
-import com.notificator.bot.application.port.out.NotificationDraftStoragePort
+import com.notificator.bot.application.port.out.DraftNotificationStoragePort
 import com.notificator.bot.application.port.out.NotificationQuery
 import com.notificator.bot.application.port.out.NotificationSenderPort
 import com.notificator.bot.domain.Notification
@@ -31,7 +31,7 @@ interface BotCommandHandler {
 @Component
 class BotCommandHandlerImpl(
     private val notificationQuery: NotificationQuery,
-    private val draftStoragePort: NotificationDraftStoragePort,
+    private val draftStoragePort: DraftNotificationStoragePort,
     private val notificationSenderPort: NotificationSenderPort,
     @Value("\${app.telegram.ui-host}") private val uiHost: String
 ) : BotCommandHandler, BotCommands {
@@ -47,7 +47,7 @@ class BotCommandHandlerImpl(
             EDIT_KEYWORD -> sendEditLink(update)
             else -> sendCommandResponse(update, "Пожалуйста, введите корректную команду $COMMAND_KEYWORD_LIST}")
         }.also {
-            draftStoragePort.removeByUserId(update.message.from.id)
+            draftStoragePort.invalidateByUserId(update.message.from.id)
         }
     }
 
