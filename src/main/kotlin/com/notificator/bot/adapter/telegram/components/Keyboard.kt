@@ -17,7 +17,7 @@ class Keyboard {
         private val ONCE_BUTTON = InlineKeyboardButton("Одноразовое").apply { callbackData = ONCE_KEYWORD }
         private val EVERY_DAY_BUTTON = InlineKeyboardButton("Каждый день").apply { callbackData = EVERY_DAY_KEYWORD }
         private val EVERY_WEEK_BUTTON = InlineKeyboardButton("Каждую неделю").apply { callbackData = EVERY_WEEK_KEYWORD }
-        private val EVERY_MONTH_BUTTON = InlineKeyboardButton("Каждую месяц").apply { callbackData = EVERY_MONTH_KEYWORD }
+        private val EVERY_MONTH_BUTTON = InlineKeyboardButton("Каждый месяц").apply { callbackData = EVERY_MONTH_KEYWORD }
         private val EVERY_YEAR_BUTTON = InlineKeyboardButton("Каждый год").apply { callbackData = EVERY_YEAR_KEYWORD }
     }
 

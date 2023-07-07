@@ -28,6 +28,10 @@ class NotificationStorageAdapter(
     override fun findByUserId(userID: Long): List<Notification> =
         repository.findByUserId(userID).map { it.toDomain() }
 
+    override fun deleteByNotificationId(id: Long) {
+        repository.deleteById(id)
+    }
+
 
     private fun NotificationDraft.toEntity() = NotificationEntity(
         userId = userId,

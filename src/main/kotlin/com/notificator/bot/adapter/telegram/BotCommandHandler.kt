@@ -10,7 +10,7 @@ import com.notificator.bot.adapter.telegram.components.BotCommands.Companion.HEL
 import com.notificator.bot.adapter.telegram.components.BotCommands.Companion.LIST_KEYWORD
 import com.notificator.bot.adapter.telegram.components.BotCommands.Companion.START_KEYWORD
 import com.notificator.bot.application.port.out.DraftNotificationStoragePort
-import com.notificator.bot.application.port.out.NotificationQuery
+import com.notificator.bot.application.port.out.NotificationService
 import com.notificator.bot.application.port.out.NotificationSenderPort
 import com.notificator.bot.domain.Notification
 import com.notificator.bot.domain.NotificationSendStatus
@@ -30,7 +30,7 @@ interface BotCommandHandler {
 
 @Component
 class BotCommandHandlerImpl(
-    private val notificationQuery: NotificationQuery,
+    private val notificationService: NotificationService,
     private val draftStoragePort: DraftNotificationStoragePort,
     private val notificationSenderPort: NotificationSenderPort,
     @Value("\${app.telegram.ui-host}") private val uiHost: String
@@ -61,12 +61,12 @@ class BotCommandHandlerImpl(
     private fun sendEditLink(update: Update) {
         notificationSenderPort.sendMessageAsLink(
             toChatId = update.message.chatId.toString(),
-            messageText = uiHost
+            messageText = "$uiHost/list/${update.message.from.id}"
         )
     }
 
     private fun getUserNotifications(userId: Long): String {
-        return notificationQuery.get(userId).filter { ntf ->
+        return notificationService.findByUserId(userId).filter { ntf ->
             ntf.sendStatus != NotificationSendStatus.SENT
                     && ntf.sendTime.toLocalDate() >= LocalDate.now()
         }.prettyNotificationList()

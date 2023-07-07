@@ -8,7 +8,7 @@ app:
   telegram:
     token: 6095266594:AAHKzP_mksRRRansgxaq96nj2nNmzFLxWeE
     bot-username: cucumber123bot
-    ui-host: www.localhost:${server.port}/
+    ui-host: www.localhost:${server.port}
   storage:
     ttl: 600000
 

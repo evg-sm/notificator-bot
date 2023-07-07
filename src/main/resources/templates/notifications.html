@@ -1,10 +1,57 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+
 <head>
-    <title>User notifications</title>
+    <title>Уведомления</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
 </head>
-<body>
-<h1>Welcome to...</h1>
-<img th:src="@{/images/cat.jpg}"/>
+
+<body style="background-color: #fff;">
+
+<div class="mytable">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Домашняя страница</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Уведомления</li>
+        </ol>
+    </nav>
+</div>
+
+<table class="table table-striped table-primary">
+    <thead class="ttop">
+    <tr class="table-info">
+        <td><b>Сообщение</b> </td>
+        <td><b>Тип</b> </td>
+        <td><b>Статус отправки</b> </td>
+        <td><b>Время отправки</b> </td>
+        <td><b>Операция</b> </td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${notifications.empty}">
+        <td colspan="4">Уведомлений нет</td>
+    </tr>
+    <tr th:each="notification : ${notifications}" th:style="'font-weight: normal;'">
+        <td><span th:text="${notification.text}"> Text </span></td>
+        <td><span th:text="${notification.type}"> Type </span></td>
+        <td><span th:text="${notification.sendStatus}"> Send status </span></td>
+        <td><span th:text="${notification.sendTime}"> Send time </span></td>
+        <td>
+            <form action="#" th:action="@{/delete}" method="post">
+                <input type="hidden" name="notificationId" th:value="${notification.id}">
+                <input type="hidden" name="userId" th:value="${notification.userId}">
+                <button type="submit">Удалить</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
 </body>
+
 </html>

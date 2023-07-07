@@ -15,8 +15,8 @@ class CalendarKeyboard {
     companion object {
         const val IGNORE = "ignore!@#$%^&"
         val WEEK_DAYS = arrayOf("П", "В", "С", "Ч", "П", "С", "В")
-        val FORWARD_CALLBACK = ">"
-        val BACKWARD_CALLBACK = "<"
+        const val FORWARD_CALLBACK = ">"
+        const val BACKWARD_CALLBACK = "<"
     }
 
     fun inlineKeyboard(date: LocalDate): InlineKeyboardMarkup {

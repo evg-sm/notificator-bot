@@ -8,4 +8,5 @@ interface NotificationStoragePort {
     fun save(notification: Notification)
     fun selectUnsent(): List<Notification>
     fun findByUserId(userID: Long): List<Notification>
+    fun deleteByNotificationId(id: Long)
 }
