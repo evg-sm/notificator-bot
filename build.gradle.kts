@@ -1,6 +1,11 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 
+val cucumberVersion: String by extra { "6.11.0" }
+val kotestVersion: String by extra { "5.5.5" }
+val telegramStarterVersion: String by extra { "6.5.0" }
+val testcontainersBomVersion: String by extra { "1.17.4" }
+
 plugins {
     val kotlinVersion = "1.6.10"
 
@@ -15,7 +20,7 @@ plugins {
 }
 
 group = "com.notificator.bot"
-version = "0.1.1"
+version = "0.1.2"
 
 configurations {
     compileOnly {
@@ -46,7 +51,7 @@ dependencies {
     // kotlin logging
     implementation("io.github.microutils:kotlin-logging:3.0.5")
     // telegram
-    implementation("org.telegram:telegrambots-spring-boot-starter:6.5.0")
+    implementation("org.telegram:telegrambots-spring-boot-starter:$telegramStarterVersion")
     // cache
     implementation("com.github.ben-manes.caffeine:caffeine")
 
@@ -54,10 +59,15 @@ dependencies {
 
     // test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("io.kotest:kotest-assertions-core:5.5.5")
-
-    testImplementation(platform("org.testcontainers:testcontainers-bom:1.17.4"))
+    testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
+    testImplementation("org.springframework.boot:spring-boot-starter-webflux")
+    // testcontainers
+    testImplementation(platform("org.testcontainers:testcontainers-bom:$testcontainersBomVersion"))
     testImplementation("org.testcontainers:postgresql")
+    // cucumber
+    testImplementation("io.cucumber:cucumber-java8:$cucumberVersion")
+    testImplementation("io.cucumber:cucumber-junit-platform-engine:$cucumberVersion")
+    testImplementation("io.cucumber:cucumber-spring:$cucumberVersion")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 }

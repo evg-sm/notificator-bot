@@ -1,4 +1,4 @@
-package com.notificator.bot
+package com.notificator.bot.initializer
 
 import org.springframework.boot.test.util.TestPropertyValues
 import org.springframework.context.ApplicationContextInitializer
