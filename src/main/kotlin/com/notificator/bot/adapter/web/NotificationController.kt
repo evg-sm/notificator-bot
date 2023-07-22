@@ -5,7 +5,6 @@ import com.notificator.bot.application.port.out.NotificationService
 import com.notificator.bot.domain.Notification
 import com.notificator.bot.domain.NotificationSendStatus
 import com.notificator.bot.domain.NotificationType
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
@@ -17,8 +16,7 @@ import java.time.format.DateTimeFormatter
 
 @Controller
 class NotificationController(
-    private val notificationService: NotificationService,
-    @Value("\${app.telegram.ui-host}") private val uiHost: String
+    private val notificationService: NotificationService
 ) {
 
     @GetMapping("/")

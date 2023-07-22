@@ -1,8 +1,8 @@
 package com.notificator.bot.adapter.notification
 
 import com.notificator.bot.adapter.telegram.NotificatorBot
-import com.notificator.bot.application.port.out.NotificationStoragePort
 import com.notificator.bot.application.port.out.NotificationSenderPort
+import com.notificator.bot.application.port.out.NotificationStoragePort
 import com.notificator.bot.domain.NotificationSendStatus
 import com.notificator.bot.domain.NotificationType
 import mu.KLogging
@@ -22,73 +22,92 @@ class NotificationSenderAdapter(
     private val notificatorBot: NotificatorBot
 ) : NotificationSenderPort {
 
-    companion object : KLogging()
+    companion object : KLogging() {
+        private const val ONE = 1L
+    }
+
 
     @Scheduled(cron = "0 */1 * * * *")
     fun sendScheduled() {
         persistencePort.selectUnsent().forEach { notification ->
-            notificatorBot.execute(
-                SendMessage().apply {
-                    chatId = notification.chatId
-                    text = notification.text
+            runCatching {
+                notificatorBot.execute(
+                    SendMessage().apply {
+                        chatId = notification.chatId
+                        text = notification.text
+                    }
+                )
+                notification
+            }.onSuccess {
+                when (notification.type) {
+                    NotificationType.ONCE ->
+                        persistencePort.save(notification.copy(sendStatus = NotificationSendStatus.SENT))
+
+                    NotificationType.EVERY_DAY ->
+                        persistencePort.save(notification.copy(sendTime = notification.sendTime.plusDays(ONE)))
+
+                    NotificationType.EVERY_WEEK ->
+                        persistencePort.save(notification.copy(sendTime = notification.sendTime.plusWeeks(ONE)))
+
+                    NotificationType.EVERY_MONTH ->
+                        persistencePort.save(notification.copy(sendTime = notification.sendTime.plusMonths(ONE)))
+
+                    NotificationType.EVERY_YEAR ->
+                        persistencePort.save(notification.copy(sendTime = notification.sendTime.plusYears(ONE)))
+
+                    NotificationType.UNDEFINED -> Unit
                 }
-            ).also {
                 logger.info { "Send notification to user ${notification.userId}" }
-            }
-
-            when (notification.type) {
-                NotificationType.ONCE -> persistencePort.save(notification.copy(sendStatus = NotificationSendStatus.SENT))
-
-                NotificationType.EVERY_DAY ->
-                    persistencePort.save(notification.copy(sendTime = notification.sendTime.plusDays(1L)))
-
-                NotificationType.EVERY_WEEK ->
-                    persistencePort.save(notification.copy(sendTime = notification.sendTime.plusWeeks(1L)))
-
-                NotificationType.EVERY_MONTH ->
-                    persistencePort.save(notification.copy(sendTime = notification.sendTime.plusMonths(1L)))
-
-                NotificationType.EVERY_YEAR ->
-                    persistencePort.save(notification.copy(sendTime = notification.sendTime.plusYears(1L)))
-
-                NotificationType.UNDEFINED -> Unit
+            }.onFailure {
+                logger.error { "Failed to send notification ${it.message}, ${it.stackTrace}" }
             }
         }
     }
 
     override fun sendMessage(toChatId: String, messageText: String, keyboard: ReplyKeyboard?) {
-        notificatorBot.execute(
-            SendMessage().apply {
-                chatId = toChatId
-                text = messageText
-                replyMarkup = keyboard
-                entities = listOf(
-                    MessageEntity().apply {
-                        offset = 0
-                        length = messageText.length
-                        type = "bold"
-                    })
-            }
-        )
+        runCatching {
+            notificatorBot.execute(
+                SendMessage().apply {
+                    chatId = toChatId
+                    text = messageText
+                    replyMarkup = keyboard
+                    entities = listOf(
+                        MessageEntity().apply {
+                            offset = 0
+                            length = messageText.length
+                            type = "bold"
+                        })
+                }
+            )
+        }.onFailure {
+            logger.error { "Failed to send notification ${it.message}, ${it.stackTrace}" }
+        }
     }
 
     override fun sendMessageAsLink(toChatId: String, messageText: String) {
-        notificatorBot.execute(
-            SendMessage().apply {
-                chatId = toChatId
-                text = "<a href='$messageText'>Редактирование уведомлений</a>"
-                parseMode = "HTML"
-            }
-        )
+        runCatching {
+            notificatorBot.execute(
+                SendMessage().apply {
+                    chatId = toChatId
+                    text = "<a href='$messageText'>Редактирование уведомлений</a>"
+                    parseMode = "HTML"
+                }
+            )
+        }.onFailure {
+            logger.error { "Failed to send notification ${it.message}, ${it.stackTrace}" }
+        }
     }
 
     override fun sendEditMessageReplyMarkup(toChatId: String, toMessageId: Int, keyboard: InlineKeyboardMarkup) {
-        notificatorBot.execute(
-            EditMessageReplyMarkup().apply {
-                chatId = toChatId
-                messageId = toMessageId
-                replyMarkup = keyboard
-            })
-
+        runCatching {
+            notificatorBot.execute(
+                EditMessageReplyMarkup().apply {
+                    chatId = toChatId
+                    messageId = toMessageId
+                    replyMarkup = keyboard
+                })
+        }.onFailure {
+            logger.error { "Failed to send notification ${it.message}, ${it.stackTrace}" }
+        }
     }
 }
