@@ -19,5 +19,6 @@
 
 Уведомление пользователя приходит в тот же чат, где он создавал уведомления.
 
-Стек: Java 11; Kotlin 1.6; Springboot 2.7.5; Postgresql; Flyway; 
+Стек: Java 11; Kotlin 1.6; Springboot 2.7.5; Postgresql; Flyway;
+Тестовый фремворк Cucumber + Spring + TestContainers;
 
