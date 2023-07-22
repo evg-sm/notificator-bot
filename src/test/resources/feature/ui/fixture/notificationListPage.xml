@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+    <head>
+        <title>Уведомления</title>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"/>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    </head>
+
+    <body style="background-color: #fff;">
+
+        <div class="mytable">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Домашняя страница</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Уведомления</li>
+                </ol>
+            </nav>
+        </div>
+
+        <table class="table table-striped table-primary">
+            <thead class="ttop">
+                <tr class="table-info">
+                    <td><b>Сообщение</b> </td>
+                    <td><b>Тип</b> </td>
+                    <td><b>Статус отправки</b> </td>
+                    <td><b>Время отправки</b> </td>
+                    <td><b>Операция</b> </td>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr style="font-weight: normal;">
+                    <td><span>Кот</span></td>
+                    <td><span>Каждый год</span></td>
+                    <td><span>Ожидает отправки</span></td>
+                    <td><span>22.04.2024 12:00</span></td>
+                    <td>
+                        <form action="/delete" method="post">
+                            <input type="hidden" name="notificationId" value="1"/>
+                            <input type="hidden" name="userId" value="236637434"/>
+                            <button type="submit">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr style="font-weight: normal;">
+                    <td><span>Чиж</span></td>
+                    <td><span>Каждый год</span></td>
+                    <td><span>Ожидает отправки</span></td>
+                    <td><span>05.04.2024 12:00</span></td>
+                    <td>
+                        <form action="/delete" method="post">
+                            <input type="hidden" name="notificationId" value="2"/>
+                            <input type="hidden" name="userId" value="236637434"/>
+                            <button type="submit">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr style="font-weight: normal;">
+                    <td><span>Кросс</span></td>
+                    <td><span>Каждый год</span></td>
+                    <td><span>Ожидает отправки</span></td>
+                    <td><span>01.04.2024 12:00</span></td>
+                    <td>
+                        <form action="/delete" method="post">
+                            <input type="hidden" name="notificationId" value="3"/>
+                            <input type="hidden" name="userId" value="236637434"/>
+                            <button type="submit">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr style="font-weight: normal;">
+                    <td><span>Юля Буркина</span></td>
+                    <td><span>Каждый год</span></td>
+                    <td><span>Ожидает отправки</span></td>
+                    <td><span>15.04.2024 12:00</span></td>
+                    <td>
+                        <form action="/delete" method="post">
+                            <input type="hidden" name="notificationId" value="4"/>
+                            <input type="hidden" name="userId" value="236637434"/>
+                            <button type="submit">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr style="font-weight: normal;">
+                    <td><span>Дядя Женя Варщик Сэма</span></td>
+                    <td><span>Каждый год</span></td>
+                    <td><span>Ожидает отправки</span></td>
+                    <td><span>10.05.2024 12:00</span></td>
+                    <td>
+                        <form action="/delete" method="post">
+                            <input type="hidden" name="notificationId" value="5"/>
+                            <input type="hidden" name="userId" value="236637434"/>
+                            <button type="submit">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr style="font-weight: normal;">
+                    <td><span>Пу</span></td>
+                    <td><span>Каждый год</span></td>
+                    <td><span>Ожидает отправки</span></td>
+                    <td><span>01.06.2024 12:00</span></td>
+                    <td>
+                        <form action="/delete" method="post">
+                            <input type="hidden" name="notificationId" value="6"/>
+                            <input type="hidden" name="userId" value="236637434"/>
+                            <button type="submit">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr style="font-weight: normal;">
+                    <td><span>Палыч</span></td>
+                    <td><span>Каждый год</span></td>
+                    <td><span>Ожидает отправки</span></td>
+                    <td><span>10.02.2024 12:00</span></td>
+                    <td>
+                        <form action="/delete" method="post">
+                            <input type="hidden" name="notificationId" value="7"/>
+                            <input type="hidden" name="userId" value="236637434"/>
+                            <button type="submit">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr style="font-weight: normal;">
+                    <td><span>Лена Шпакова</span></td>
+                    <td><span>Каждый год</span></td>
+                    <td><span>Ожидает отправки</span></td>
+                    <td><span>27.06.2024 12:00</span></td>
+                    <td>
+                        <form action="/delete" method="post">
+                            <input type="hidden" name="notificationId" value="8"/>
+                            <input type="hidden" name="userId" value="236637434"/>
+                            <button type="submit">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr style="font-weight: normal;">
+                    <td><span>Тетушка Симоша</span></td>
+                    <td><span>Каждый год</span></td>
+                    <td><span>Ожидает отправки</span></td>
+                    <td><span>31.07.2023 12:00</span></td>
+                    <td>
+                        <form action="/delete" method="post">
+                            <input type="hidden" name="notificationId" value="9"/>
+                            <input type="hidden" name="userId" value="236637434"/>
+                            <button type="submit">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr style="font-weight: normal;">
+                    <td><span>Леша Квасов</span></td>
+                    <td><span>Каждый год</span></td>
+                    <td><span>Ожидает отправки</span></td>
+                    <td><span>04.08.2023 12:00</span></td>
+                    <td>
+                        <form action="/delete" method="post">
+                            <input type="hidden" name="notificationId" value="10"/>
+                            <input type="hidden" name="userId" value="236637434"/>
+                            <button type="submit">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr style="font-weight: normal;">
+                    <td><span>Сестра</span></td>
+                    <td><span>Каждый год</span></td>
+                    <td><span>Ожидает отправки</span></td>
+                    <td><span>15.05.2024 12:00</span></td>
+                    <td>
+                        <form action="/delete" method="post">
+                            <input type="hidden" name="notificationId" value="11"/>
+                            <input type="hidden" name="userId" value="236637434"/>
+                            <button type="submit">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr style="font-weight: normal;">
+                    <td><span>Никита</span></td>
+                    <td><span>Каждый год</span></td>
+                    <td><span>Ожидает отправки</span></td>
+                    <td><span>05.04.2024 12:00</span></td>
+                    <td>
+                        <form action="/delete" method="post">
+                            <input type="hidden" name="notificationId" value="12"/>
+                            <input type="hidden" name="userId" value="236637434"/>
+                            <button type="submit">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr style="font-weight: normal;">
+                    <td><span>Даша</span></td>
+                    <td><span>Каждый год</span></td>
+                    <td><span>Ожидает отправки</span></td>
+                    <td><span>24.04.2024 12:00</span></td>
+                    <td>
+                        <form action="/delete" method="post">
+                            <input type="hidden" name="notificationId" value="13"/>
+                            <input type="hidden" name="userId" value="236637434"/>
+                            <button type="submit">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr style="font-weight: normal;">
+                    <td><span>Пятипалый Серж</span></td>
+                    <td><span>Каждый год</span></td>
+                    <td><span>Ожидает отправки</span></td>
+                    <td><span>22.11.2023 12:00</span></td>
+                    <td>
+                        <form action="/delete" method="post">
+                            <input type="hidden" name="notificationId" value="14"/>
+                            <input type="hidden" name="userId" value="236637434"/>
+                            <button type="submit">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr style="font-weight: normal;">
+                    <td><span>Глеб</span></td>
+                    <td><span>Каждый год</span></td>
+                    <td><span>Ожидает отправки</span></td>
+                    <td><span>22.11.2023 12:00</span></td>
+                    <td>
+                        <form action="/delete" method="post">
+                            <input type="hidden" name="notificationId" value="15"/>
+                            <input type="hidden" name="userId" value="236637434"/>
+                            <button type="submit">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr style="font-weight: normal;">
+                    <td><span>TEST</span></td>
+                    <td><span>Каждый год</span></td>
+                    <td><span>Ожидает отправки</span></td>
+                    <td><span>22.04.2024 12:00</span></td>
+                    <td>
+                        <form action="/delete" method="post">
+                            <input type="hidden" name="notificationId" value="16"/>
+                            <input type="hidden" name="userId" value="236637434"/>
+                            <button type="submit">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </body>
+</html>
