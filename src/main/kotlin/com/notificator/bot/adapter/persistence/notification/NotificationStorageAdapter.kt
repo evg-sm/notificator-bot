@@ -1,7 +1,7 @@
 package com.notificator.bot.adapter.persistence.notification
 
-import com.notificator.bot.application.port.out.NotificationStoragePort
 import com.notificator.bot.adapter.persistence.notification.entity.NotificationEntity
+import com.notificator.bot.application.port.out.NotificationStoragePort
 import com.notificator.bot.domain.Notification
 import com.notificator.bot.domain.NotificationDraft
 import com.notificator.bot.domain.NotificationSendStatus
@@ -22,8 +22,8 @@ class NotificationStorageAdapter(
         repository.save(notification.toEntity())
     }
 
-    override fun selectUnsent(): List<Notification> =
-        repository.selectUnsent(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES)).map { it.toDomain() }
+    override fun selectUnsentWithLock(): List<Notification> =
+        repository.selectUnsentWithLock(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES)).map { it.toDomain() }
 
     override fun findByUserId(userID: Long): List<Notification> =
         repository.findByUserId(userID).map { it.toDomain() }
@@ -32,8 +32,7 @@ class NotificationStorageAdapter(
         repository.deleteById(id)
     }
 
-
-    private fun NotificationDraft.toEntity() = NotificationEntity(
+    private fun NotificationDraft.toEntity(): NotificationEntity = NotificationEntity(
         userId = userId,
         chatId = chatId,
         type = type,
@@ -44,7 +43,7 @@ class NotificationStorageAdapter(
         updateTime = LocalDateTime.now()
     )
 
-    private fun Notification.toEntity() = NotificationEntity(
+    private fun Notification.toEntity(): NotificationEntity = NotificationEntity(
         id = id,
         userId = userId,
         chatId = chatId,
@@ -56,7 +55,7 @@ class NotificationStorageAdapter(
         updateTime = LocalDateTime.now()
     )
 
-    private fun NotificationEntity.toDomain() = Notification(
+    private fun NotificationEntity.toDomain(): Notification = Notification(
         id = id,
         userId = userId,
         chatId = chatId,

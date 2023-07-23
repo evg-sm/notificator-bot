@@ -15,7 +15,6 @@ class CacheConfiguration(
 ) {
 
     @Bean
-    fun caffeineCache(): Cache<Long, NotificationDraft> {
-       return Caffeine.newBuilder().expireAfterWrite(Duration.ofMillis(storageTtl)).build()
-    }
+    fun caffeineCache(): Cache<Long, NotificationDraft> =
+        Caffeine.newBuilder().expireAfterWrite(Duration.ofMillis(storageTtl)).build()
 }

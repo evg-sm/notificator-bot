@@ -29,7 +29,7 @@ class NotificationSenderAdapter(
 
     @Scheduled(cron = "0 */1 * * * *")
     fun sendScheduled() {
-        persistencePort.selectUnsent().forEach { notification ->
+        persistencePort.selectUnsentWithLock().forEach { notification ->
             runCatching {
                 notificatorBot.execute(
                     SendMessage().apply {
