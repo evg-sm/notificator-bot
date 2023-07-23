@@ -2,7 +2,7 @@
 
 Чат бот напоминаний для мессенджера Telegram.
 
-Бот доступен по ссылке  https://t.me/cucumber1212bot
+Бот доступен по ссылке:  https://t.me/cucumber1212bot
 
 Основные функиции:
 * Формирование уведомлений в чате Telegram.
@@ -19,6 +19,9 @@
 
 Уведомление пользователя приходит в тот же чат, где он создавал уведомления.
 
-Стек: Java 11; Kotlin 1.6; Springboot 2.7.5; Postgresql; Flyway;
+Один раз в минуту бот проверяет наличие уведомлений для отправки, если такие есть - отправляет.
+
+
+Стек: Gradle; Java 11; Kotlin 1.6; Springboot 2.7.5; Postgresql; Flyway; Caffeine cache;
 
 Тестовый фремворк Cucumber + Spring + TestContainers;

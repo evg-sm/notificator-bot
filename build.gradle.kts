@@ -40,7 +40,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
-    implementation("org.springframework.boot:spring-boot-devtools")
     // actuator
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     // jackson
@@ -50,11 +49,11 @@ dependencies {
     implementation("org.flywaydb:flyway-core")
     // kotlin logging
     implementation("io.github.microutils:kotlin-logging:3.0.5")
-    // telegram
+    // telegram starter
     implementation("org.telegram:telegrambots-spring-boot-starter:$telegramStarterVersion")
     // cache
     implementation("com.github.ben-manes.caffeine:caffeine")
-
+    // devtools
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
     // test
