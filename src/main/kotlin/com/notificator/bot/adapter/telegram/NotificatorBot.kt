@@ -25,7 +25,7 @@ class NotificatorBot(
     override fun getBotUsername(): String = botUsername
 
     /**
-     * setup left menu buttons
+     * setup chat left menu buttons
      */
     @PostConstruct
     fun init() {
@@ -33,16 +33,19 @@ class NotificatorBot(
     }
 
     override fun onUpdateReceived(update: Update) {
-        update.message?.text?.let {
-            logger.info { "Received text message ${String(it.toByteArray(), Charsets.UTF_8)}" }
-        }
-        update.callbackQuery?.data?.let {
-            logger.info { "Received callback data ${update.callbackQuery.data}" }
-        }
-
+        update.logIncomingMessage()
         when {
             update.isCommandMessage() -> botCommandHandler.handle(update, ::execute)
             else -> notificationBuildHandler.handle(update, ::execute)
+        }
+    }
+
+    private fun Update.logIncomingMessage() {
+        message?.text?.let {
+            logger.info { "Received text message ${String(it.toByteArray(), Charsets.UTF_8)}" }
+        }
+        callbackQuery?.data?.let {
+            logger.info { "Received callback data ${callbackQuery.data}" }
         }
     }
 
