@@ -9,14 +9,14 @@ import com.notificator.bot.adapter.telegram.components.BotCommands.Companion.HEL
 import com.notificator.bot.adapter.telegram.components.BotCommands.Companion.HELP_TEXT
 import com.notificator.bot.adapter.telegram.components.BotCommands.Companion.LIST_KEYWORD
 import com.notificator.bot.adapter.telegram.components.BotCommands.Companion.START_KEYWORD
+import com.notificator.bot.application.configuration.BotSetting
 import com.notificator.bot.application.port.out.DraftNotificationStoragePort
-import com.notificator.bot.application.port.out.NotificationService
 import com.notificator.bot.application.port.out.NotificationSenderPort
+import com.notificator.bot.application.port.out.NotificationService
 import com.notificator.bot.domain.Notification
 import com.notificator.bot.domain.NotificationSendStatus
 import com.notificator.bot.domain.NotificationType
 import mu.KLogging
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.Update
@@ -33,7 +33,7 @@ class BotCommandHandlerImpl(
     private val notificationService: NotificationService,
     private val draftStoragePort: DraftNotificationStoragePort,
     private val notificationSenderPort: NotificationSenderPort,
-    @Value("\${app.telegram.ui-host}") private val uiHost: String
+    private val botSetting: BotSetting
 ) : BotCommandHandler, BotCommands {
 
     companion object : KLogging()
@@ -61,7 +61,7 @@ class BotCommandHandlerImpl(
     private fun sendEditLink(update: Update) {
         notificationSenderPort.sendMessageAsLink(
             toChatId = update.message.chatId.toString(),
-            messageText = "$uiHost/list/${update.message.from.id}"
+            messageText = "${botSetting.uiHost}/list/${update.message.from.id}"
         )
     }
 
@@ -74,27 +74,39 @@ class BotCommandHandlerImpl(
 
     private fun List<Notification>.prettyNotificationList(): String {
         return if (isNotEmpty()) {
-            var rowNum = 1
+            val mapByType: Map<NotificationType, List<Notification>> =
+                associateBy({ it.type }, { filter { n -> it.type == n.type } })
+
             val stringBuilder = StringBuilder()
-            forEach { ntf: Notification ->
-                stringBuilder
-                    .append("$rowNum - '${ntf.text}' '${ntf.type.pretty()}' '${ntf.sendTime.pretty()}'")
-                    .append("\n")
-                rowNum++
-            }
+            mapByType.keys.forEach { type -> appendEach(stringBuilder, type, mapByType.getValue(type)) }
+
             stringBuilder.toString()
         } else {
             "У Bас пока нет сохраненных уведомлений"
         }
     }
 
+    private fun appendEach(
+        stringBuilder: StringBuilder,
+        type: NotificationType,
+        notifications: List<Notification>
+    ): StringBuilder {
+        if (notifications.isNotEmpty()) {
+            stringBuilder.append("\n").append("${type.pretty()}:").append("\n").append("\n")
+            notifications.forEach { n ->
+                stringBuilder.append("'${n.text}' '${n.sendTime.pretty()}'").append("\n")
+            }
+        }
+        return stringBuilder
+    }
+
     private fun NotificationType.pretty(): String = when (this) {
-        NotificationType.ONCE -> "единоразовое"
-        NotificationType.EVERY_DAY -> "каждый день"
-        NotificationType.EVERY_WEEK -> "каждую неделю"
-        NotificationType.EVERY_MONTH -> "каждый месяц"
-        NotificationType.EVERY_YEAR -> "каждый год"
-        NotificationType.UNDEFINED -> "не определено"
+        NotificationType.ONCE -> "Единоразовые"
+        NotificationType.EVERY_DAY -> "Каждый день"
+        NotificationType.EVERY_WEEK -> "Каждую неделю"
+        NotificationType.EVERY_MONTH -> "Каждый месяц"
+        NotificationType.EVERY_YEAR -> "Каждый год"
+        NotificationType.UNDEFINED -> "Не определено"
     }
 
     private fun LocalDateTime.pretty(): String = format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))

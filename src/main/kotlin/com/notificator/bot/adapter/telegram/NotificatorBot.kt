@@ -1,10 +1,10 @@
 package com.notificator.bot.adapter.telegram
 
-import com.notificator.bot.application.port.`in`.NotificationListener
 import com.notificator.bot.adapter.telegram.components.BotCommands
 import com.notificator.bot.adapter.telegram.components.BotCommands.Companion.LIST_OF_COMMANDS
+import com.notificator.bot.application.configuration.BotSetting
+import com.notificator.bot.application.port.`in`.NotificationListener
 import mu.KLogging
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands
@@ -14,15 +14,14 @@ import javax.annotation.PostConstruct
 
 @Component
 class NotificatorBot(
-    @Value("\${app.telegram.token}") private val telegramToken: String,
-    @Value("\${app.telegram.bot-username}") private val botUsername: String,
+    private val botSetting: BotSetting,
     private val botCommandHandler: BotCommandHandler,
     private val notificationBuildHandler: NotificationBuildHandler
-) : TelegramLongPollingBot(telegramToken), BotCommands, NotificationListener {
+) : TelegramLongPollingBot(botSetting.token), BotCommands, NotificationListener {
 
     companion object : KLogging()
 
-    override fun getBotUsername(): String = botUsername
+    override fun getBotUsername(): String = botSetting.botUsername
 
     /**
      * setup chat left menu buttons
