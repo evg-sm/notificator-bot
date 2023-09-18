@@ -34,7 +34,7 @@ class NotificatorBot(
     override fun onUpdateReceived(update: Update) {
         update.logIncomingMessage()
         when {
-            update.isCommandMessage() -> botCommandHandler.handle(update, ::execute)
+            update.isCommandMessage() -> botCommandHandler.handle(update)
             else -> notificationBuildHandler.handle(update, ::execute)
         }
     }

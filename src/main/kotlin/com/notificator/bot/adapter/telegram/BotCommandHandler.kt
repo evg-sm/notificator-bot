@@ -25,7 +25,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 interface BotCommandHandler {
-    fun handle(update: Update, execute: (sendMessage: SendMessage) -> Unit)
+    fun handle(update: Update)
 }
 
 @Component
@@ -38,7 +38,7 @@ class BotCommandHandlerImpl(
 
     companion object : KLogging()
 
-    override fun handle(update: Update, execute: (sendMessage: SendMessage) -> Unit) {
+    override fun handle(update: Update) {
         when (update.message.text) {
             START_KEYWORD -> sendCommandResponse(update, ASK_FOR_NOTIFICATION_TEXT)
             HELP_KEYWORD -> sendCommandResponse(update, HELP_TEXT)

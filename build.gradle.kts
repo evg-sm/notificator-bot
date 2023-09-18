@@ -7,7 +7,7 @@ val telegramStarterVersion: String by extra { "6.5.0" }
 val testcontainersBomVersion: String by extra { "1.17.4" }
 
 plugins {
-    val kotlinVersion = "1.6.10"
+    val kotlinVersion = "1.7.10"
 
     id("org.springframework.boot") version "2.7.5"
     id("io.spring.dependency-management") version "1.0.15.RELEASE"
