@@ -7,8 +7,8 @@ import com.notificator.bot.domain.NotificationSendStatus
 import com.notificator.bot.domain.NotificationType
 import mu.KLogging
 import org.springframework.context.annotation.Lazy
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup
 import org.telegram.telegrambots.meta.api.objects.MessageEntity
@@ -18,17 +18,15 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard
 @Component
 class NotificationSenderAdapter(
     private val persistencePort: NotificationStoragePort,
-    @Lazy
-    private val notificatorBot: NotificatorBot
+    @Lazy private val notificatorBot: NotificatorBot
 ) : NotificationSenderPort {
 
     companion object : KLogging() {
         private const val ONE = 1L
     }
 
-
-    @Scheduled(cron = "0 */1 * * * *")
-    fun sendScheduled() {
+    @Transactional
+    override fun sendScheduled() {
         persistencePort.selectUnsentWithLock().forEach { notification ->
             runCatching {
                 notificatorBot.execute(
