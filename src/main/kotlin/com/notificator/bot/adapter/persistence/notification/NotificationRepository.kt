@@ -1,6 +1,7 @@
 package com.notificator.bot.adapter.persistence.notification
 
 import com.notificator.bot.adapter.persistence.notification.entity.NotificationEntity
+import com.notificator.bot.domain.NotificationSendStatus
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import java.time.LocalDateTime
@@ -14,5 +15,5 @@ interface NotificationRepository : CrudRepository<NotificationEntity, Long> {
     )
     fun selectUnsentWithLock(now: LocalDateTime): List<NotificationEntity>
 
-    fun findByUserId(userId: Long): List<NotificationEntity>
+    fun findByUserIdAndSendStatus(userId: Long, sendStatus: NotificationSendStatus): List<NotificationEntity>
 }

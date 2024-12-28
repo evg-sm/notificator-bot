@@ -25,8 +25,8 @@ class NotificationStorageAdapter(
     override fun selectUnsentWithLock(): List<Notification> =
         repository.selectUnsentWithLock(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES)).map { it.toDomain() }
 
-    override fun findByUserId(userID: Long): List<Notification> =
-        repository.findByUserId(userID).map { it.toDomain() }
+    override fun findUnsentByUserId(userID: Long): List<Notification> =
+        repository.findByUserIdAndSendStatus(userID, NotificationSendStatus.PENDING).map { it.toDomain() }
 
     override fun deleteByNotificationId(id: Long) {
         repository.deleteById(id)

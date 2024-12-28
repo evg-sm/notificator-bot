@@ -10,7 +10,7 @@ class NotificationServiceImpl(
     private val notificationStoragePort: NotificationStoragePort
 ) : NotificationService {
 
-    override fun findByUserId(userId: Long): List<Notification> = notificationStoragePort.findByUserId(userId)
+    override fun findByUserId(userId: Long): List<Notification> = notificationStoragePort.findUnsentByUserId(userId)
 
     override fun deleteByNotificationId(id: Long) = notificationStoragePort.deleteByNotificationId(id)
 }

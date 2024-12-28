@@ -25,20 +25,23 @@
 <table class="table table-striped table-primary">
     <thead class="ttop">
     <tr class="table-info">
-        <td><b>Сообщение</b> </td>
-        <td><b>Тип</b> </td>
-        <td><b>Статус отправки</b> </td>
-        <td><b>Время отправки</b> </td>
-        <td><b>Операция</b> </td>
+        <td><b>Сообщение</b></td>
+        <td><b>Статус отправки</b></td>
+        <td><b>Время отправки</b></td>
+        <td><b>Операция</b></td>
     </tr>
     </thead>
     <tbody>
     <tr th:if="${notifications.empty}">
         <td colspan="4">Уведомлений нет</td>
     </tr>
-    <tr th:each="notification : ${notifications}" th:style="'font-weight: normal;'">
+
+    <tr>
+        <td colspan="5" class="bold" style="margin-left: 25px;" bgcolor="White"><b><i>Одноразовое:</i></b></td>
+    </tr>
+    <tr th:each="notification : ${notifications}" th:if="${notification.type == 'Одноразовое'}"
+        th:object="${notification}" th:style="'font-weight: normal;'">
         <td><span th:text="${notification.text}"> Text </span></td>
-        <td><span th:text="${notification.type}"> Type </span></td>
         <td><span th:text="${notification.sendStatus}"> Send status </span></td>
         <td><span th:text="${notification.sendTime}"> Send time </span></td>
         <td>
@@ -49,6 +52,75 @@
             </form>
         </td>
     </tr>
+
+    <tr>
+        <td colspan="5" class="bold" style="margin-left: 25px;" bgcolor="White"><b><i>Каждый день:</i></b></td>
+    </tr>
+    <tr th:each="notification : ${notifications}" th:if="${notification.type == 'Каждый день'}"
+        th:object="${notification}" th:style="'font-weight: normal;'">
+        <td><span th:text="${notification.text}"> Text </span></td>
+        <td><span th:text="${notification.sendStatus}"> Send status </span></td>
+        <td><span th:text="${notification.sendTime}"> Send time </span></td>
+        <td>
+            <form action="#" th:action="@{/delete}" method="post">
+                <input type="hidden" name="notificationId" th:value="${notification.id}"/>
+                <input type="hidden" name="userId" th:value="${notification.userId}"/>
+                <button type="submit">Удалить</button>
+            </form>
+        </td>
+    </tr>
+
+    <tr>
+        <td colspan="5" class="bold" style="margin-left: 25px;" bgcolor="White"><b><i>Каждую неделю:</i></b></td>
+    </tr>
+    <tr th:each="notification : ${notifications}" th:if="${notification.type == 'Каждую неделю'}"
+        th:object="${notification}" th:style="'font-weight: normal;'">
+        <td><span th:text="${notification.text}"> Text </span></td>
+        <td><span th:text="${notification.sendStatus}"> Send status </span></td>
+        <td><span th:text="${notification.sendTime}"> Send time </span></td>
+        <td>
+            <form action="#" th:action="@{/delete}" method="post">
+                <input type="hidden" name="notificationId" th:value="${notification.id}"/>
+                <input type="hidden" name="userId" th:value="${notification.userId}"/>
+                <button type="submit">Удалить</button>
+            </form>
+        </td>
+    </tr>
+
+    <tr>
+        <td colspan="5" class="bold" style="margin-left: 25px;" bgcolor="White"><b><i>Каждый месяц:</i></b></td>
+    </tr>
+    <tr th:each="notification : ${notifications}" th:if="${notification.type == 'Каждый месяц'}"
+        th:object="${notification}" th:style="'font-weight: normal;'">
+        <td><span th:text="${notification.text}"> Text </span></td>
+        <td><span th:text="${notification.sendStatus}"> Send status </span></td>
+        <td><span th:text="${notification.sendTime}"> Send time </span></td>
+        <td>
+            <form action="#" th:action="@{/delete}" method="post">
+                <input type="hidden" name="notificationId" th:value="${notification.id}"/>
+                <input type="hidden" name="userId" th:value="${notification.userId}"/>
+                <button type="submit">Удалить</button>
+            </form>
+        </td>
+    </tr>
+
+    <tr>
+        <td colspan="5" class="bold" style="margin-left: 25px;" bgcolor="White"><b><i>Каждый год:</i></b></td>
+    </tr>
+    <tr th:each="notification : ${notifications}" th:if="${notification.type == 'Каждый год'}"
+        th:object="${notification}" th:style="'font-weight: normal;'">
+        <td><span th:text="${notification.text}"> Text </span></td>
+        <td><span th:text="${notification.sendStatus}"> Send status </span></td>
+        <td><span th:text="${notification.sendTime}"> Send time </span></td>
+        <td>
+            <form action="#" th:action="@{/delete}" method="post">
+                <input type="hidden" name="notificationId" th:value="${notification.id}"/>
+                <input type="hidden" name="userId" th:value="${notification.userId}"/>
+                <button type="submit">Удалить</button>
+            </form>
+        </td>
+    </tr>
+
     </tbody>
 </table>
 </body>

@@ -25,28 +25,51 @@
         <table class="table table-striped table-primary">
             <thead class="ttop">
                 <tr class="table-info">
-                    <td><b>Сообщение</b> </td>
-                    <td><b>Тип</b> </td>
-                    <td><b>Статус отправки</b> </td>
-                    <td><b>Время отправки</b> </td>
-                    <td><b>Операция</b> </td>
+                    <td><b>Сообщение</b></td>
+                    <td><b>Статус отправки</b></td>
+                    <td><b>Время отправки</b></td>
+                    <td><b>Операция</b></td>
                 </tr>
             </thead>
             <tbody>
 
+
+                <tr>
+                    <td colspan="5" class="bold" style="margin-left: 25px;" bgcolor="White"><b><i>Одноразовое:</i></b></td>
+                </tr>
+
+
+                <tr>
+                    <td colspan="5" class="bold" style="margin-left: 25px;" bgcolor="White"><b><i>Каждый день:</i></b></td>
+                </tr>
+
+
+                <tr>
+                    <td colspan="5" class="bold" style="margin-left: 25px;" bgcolor="White"><b><i>Каждую неделю:</i></b></td>
+                </tr>
+
+
+                <tr>
+                    <td colspan="5" class="bold" style="margin-left: 25px;" bgcolor="White"><b><i>Каждый месяц:</i></b></td>
+                </tr>
+
+
+                <tr>
+                    <td colspan="5" class="bold" style="margin-left: 25px;" bgcolor="White"><b><i>Каждый год:</i></b></td>
+                </tr>
                 <tr style="font-weight: normal;">
                     <td><span>TEST</span></td>
-                    <td><span>Каждый год</span></td>
                     <td><span>Ожидает отправки</span></td>
                     <td><span>31.08.2035 11:11</span></td>
                     <td>
                         <form action="/delete" method="post">
-                            <input type="hidden" name="notificationId" value="25"/>
+                            <input type="hidden" name="notificationId" value="16"/>
                             <input type="hidden" name="userId" value="236637434"/>
                             <button type="submit">Удалить</button>
                         </form>
                     </td>
                 </tr>
+
             </tbody>
         </table>
     </body>

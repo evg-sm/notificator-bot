@@ -7,6 +7,6 @@ interface NotificationStoragePort {
     fun save(notificationDraft: NotificationDraft)
     fun save(notification: Notification)
     fun selectUnsentWithLock(): List<Notification>
-    fun findByUserId(userID: Long): List<Notification>
+    fun findUnsentByUserId(userID: Long): List<Notification>
     fun deleteByNotificationId(id: Long)
 }
