@@ -27,6 +27,7 @@ class NotificationStorageAdapter(
 
     override fun findUnsentByUserId(userID: Long): List<Notification> =
         repository.findByUserIdAndSendStatus(userID, NotificationSendStatus.PENDING).map { it.toDomain() }
+            .filter { it.sendTime >= LocalDateTime.now() }
 
     override fun deleteByNotificationId(id: Long) {
         repository.deleteById(id)

@@ -24,7 +24,7 @@ class NotificationController(
 
     @GetMapping("/list/{userId}")
     fun notificationList(@PathVariable userId: Long, model: Model): String {
-        model.addAttribute("notifications", notificationService.findByUserId(userId).toDto())
+        model.addAttribute("notifications", notificationService.findByUserId(userId).sorted().toDto())
         model.addAttribute("userId", userId)
         return "notifications"
     }

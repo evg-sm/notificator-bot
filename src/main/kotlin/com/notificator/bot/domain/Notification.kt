@@ -10,4 +10,8 @@ data class Notification(
     val sendStatus: NotificationSendStatus,
     val text: String,
     val sendTime: LocalDateTime
-)
+): Comparable<Notification> {
+    override fun compareTo(other: Notification): Int {
+        return sendTime.compareTo(other.sendTime)
+    }
+}
